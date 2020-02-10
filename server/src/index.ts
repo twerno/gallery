@@ -1,15 +1,15 @@
-import express from 'express';
+import { initServer } from './app';
 
-const app = express();
-const port = 3333;
+require('module-alias/register');
 
-app.get("/", (req, res) => {
-    res.send("Server is working");
-});
+initServer()
+    .then(({ app, port }) => {
 
-app.listen(port, err => {
-    if (err) {
-        return console.error(err);
-    }
-    return console.log(`server is listening on ${port}`);
-});
+        app.listen(port, err => {
+            if (err) {
+                return console.error(err);
+            }
+            return console.log(`server is listening on ${port}`);
+        });
+
+    });
