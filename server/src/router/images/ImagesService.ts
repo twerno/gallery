@@ -1,5 +1,5 @@
+import { IImageQueryParams, IImageQueryRespBody } from '../../../../shared/src/ImagesParams';
 import { IProperties } from '../../helpers/Properties';
-import { IImageQueryParams, IImageQueryRespBody } from '../../shared/ImagesParams';
 import { GiphyService } from './GiphyService';
 import { PixabayService } from './PixabayService';
 

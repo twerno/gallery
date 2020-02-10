@@ -1,8 +1,8 @@
 import Axios from 'axios';
 import httpCodes from 'http-status-codes';
 
+import { IGiphyReturnModel, IImageQueryParams } from '../../../../shared';
 import { IProperties } from '../../helpers/Properties';
-import { IGiphyReturnModel, IImageQueryParams } from '../../shared/ImagesParams';
 
 export class GiphyService {
 

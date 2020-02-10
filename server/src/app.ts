@@ -24,7 +24,7 @@ export async function initServer(): Promise<{ app: express.Express, port: number
     const imagesService = new ImagesService(properties);
 
     // API
-    registerApi('/image', new ImagesApi(imagesService));
+    registerApi('/api/images', new ImagesApi(imagesService));
 
     // tick
     app.get("/", (req, res) => {

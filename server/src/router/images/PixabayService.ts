@@ -1,8 +1,8 @@
 import Axios from 'axios';
 import httpCodes from 'http-status-codes';
 
+import { IImageQueryParams, IPixabayReturnModel } from '../../../../shared';
 import { IProperties } from '../../helpers/Properties';
-import { IImageQueryParams, IPixabayReturnModel } from '../../shared/ImagesParams';
 
 export class PixabayService {
 

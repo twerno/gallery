@@ -1,0 +1,14 @@
+{
+  "name": "shared",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc"
+  },
+  "author": "Tomasz Werno",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^3.7.5"
+  }
+}
