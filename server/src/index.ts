@@ -1,6 +1,7 @@
-import { initServer } from './app';
-
+// tslint:disable-next-line:no-var-requires
 require('module-alias/register');
+
+import { initServer } from './app';
 
 initServer()
     .then(({ app, port }) => {

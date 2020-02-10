@@ -1,7 +1,6 @@
+import { IImageQueryRespBody } from '@shared/';
 import axios from 'axios';
 import * as React from 'react';
-
-import { IImageQueryRespBody } from '../../shared/src/ImagesParams';
 
 export const App = () => {
 
