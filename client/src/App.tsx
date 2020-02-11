@@ -1,15 +1,18 @@
 import { IImageQueryRespBody } from '@shared/';
 import axios from 'axios';
+import { Gallery } from 'gallery/Gallery';
 import * as React from 'react';
-
-import style from './app.module.css';
 
 export const App = () => {
 
+    const [state, setState] = React.useState<IImageQueryRespBody | undefined>();
+
     React.useEffect(() => {
         axios.get<IImageQueryRespBody>('/api/images/query?q=cats')
-            .then(val => console.log(val.data.giphy));
+            .then(val => setState(val.data));
     }, []);
 
-    return <div className={style.red}>Hello world</div>;
+    console.log(state);
+
+    return <Gallery providers={state?.providers}></Gallery>;
 }

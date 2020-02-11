@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import httpCodes from 'http-status-codes';
 
-import { IImageQueryParams, IPixabayReturnModel } from '@shared/';
+import { IImageQueryParams, IPixabayGetImageReturnModel, ILocalPixabayGetImageReturnModel } from '@shared/';
 import { IProperties } from 'helpers/Properties';
 
 
@@ -11,7 +11,7 @@ export class PixabayService {
         protected properties: IProperties
     ) { }
 
-    public async loadImageData(queryParams: IImageQueryParams): Promise<IPixabayReturnModel> {
+    public async loadImageData(queryParams: IImageQueryParams): Promise<ILocalPixabayGetImageReturnModel> {
 
         const params = {
             key: this.properties.PIXABAY_API,
@@ -20,9 +20,9 @@ export class PixabayService {
             per_page: queryParams.perPageLimit
         };
 
-        const axiosResp = await Axios.get<IPixabayReturnModel>('https://pixabay.com/api/', { params });
+        const axiosResp = await Axios.get<IPixabayGetImageReturnModel>('https://pixabay.com/api/', { params });
         if (axiosResp.status === httpCodes.OK) {
-            return axiosResp.data;
+            return { ...axiosResp.data, imgProvider: 'pixabay' };
         }
         else {
             throw axiosResp;

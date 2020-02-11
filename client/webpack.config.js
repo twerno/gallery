@@ -11,7 +11,11 @@ module.exports = {
         path: path.resolve(__dirname, 'dist/js'),
     },
     resolve: {
-        extensions: [".ts", ".tsx", ".js", ".css"]
+        alias: {
+            '@shared': path.resolve('../shared/lib'),
+        },
+        extensions: [".ts", ".tsx", ".js", ".css"],
+        modules: ['src', 'node_modules'],
     },
     module: {
         rules: [

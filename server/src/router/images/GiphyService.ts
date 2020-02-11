@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import httpCodes from 'http-status-codes';
 
-import { IGiphyReturnModel, IImageQueryParams } from '@shared/';
+import { IImageQueryParams, ILocalGiphyGetImageReturnModel, IGiphyGetImageReturnModel } from '@shared/';
 import { IProperties } from 'helpers/Properties';
 
 
@@ -11,7 +11,7 @@ export class GiphyService {
         protected properties: IProperties
     ) { }
 
-    public async loadImageData(queryParams: IImageQueryParams): Promise<IGiphyReturnModel> {
+    public async loadImageData(queryParams: IImageQueryParams): Promise<ILocalGiphyGetImageReturnModel> {
 
         const params = {
             api_key: this.properties.GIPHY_API,
@@ -20,9 +20,9 @@ export class GiphyService {
             limit: queryParams.perPageLimit
         };
 
-        const axiosResp = await Axios.get<IGiphyReturnModel>('http://api.giphy.com/v1/gifs/search', { params });
+        const axiosResp = await Axios.get<IGiphyGetImageReturnModel>('http://api.giphy.com/v1/gifs/search', { params });
         if (axiosResp.status === httpCodes.OK) {
-            return axiosResp.data;
+            return { ...axiosResp.data, imgProvider: 'giphy' };
         }
         else {
             throw axiosResp;

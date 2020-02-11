@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import { IImageQueryParams, IImageQueryRespBody } from '@shared/lib';
 import { ImagesService } from './ImagesService';
-import { requestHandlerWraper, AsyncHandler } from 'router/ApiUtils';
+import { requestHandlerWraper, AsyncHandler } from '../ApiUtils';
 
 export class ImagesApi {
 

@@ -10,7 +10,7 @@ initServer()
             if (err) {
                 return console.error(err);
             }
-            return console.log(`server is listening on ${port}`);
+            return console.log(`[${new Date().toISOString()}] server is listening on ${port}`);
         });
 
     });
