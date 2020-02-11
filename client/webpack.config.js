@@ -37,7 +37,10 @@ module.exports = {
                         /** The css-loader interprets @import and url() like import/require() and will resolve them. */
                         loader: 'css-loader',
                         options: {
-                            modules: true,
+                            modules: {
+                                mode: 'local',
+                                localIdentName: '[name]__[local]--[hash:base64:5]',
+                            },
                         },
                     }
                 ],

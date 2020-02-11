@@ -12,12 +12,13 @@ module.exports = merge(common, {
             path.join(__dirname, 'dist')
         ],
         port: 9000,
-        // writeToDisk: true,
+        writeToDisk: true,
         proxy: {
             '/api': 'http://localhost:3333'
         },
-        hot: true,
-        host: "0.0.0.0"
+        historyApiFallback: true,
+        host: "0.0.0.0",
+        inline: true,
     },
     devtool: 'source-map',
     plugins: [

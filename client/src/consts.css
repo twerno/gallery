@@ -1,0 +1,3 @@
+@value v-primary: red;
+@value s-black: black-selector;
+@value m-large: (min-width: 960px);

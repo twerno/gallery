@@ -16,6 +16,7 @@ export class ImagesApi {
 
     private queryHandler: AsyncHandler<IImageQueryParams, IImageQueryRespBody, never>
         = async (req, res) => {
+            console.log('received request /query');
             const result = await this.imageService.query(req.query);
             res.json(result);
         }
