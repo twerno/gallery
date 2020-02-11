@@ -2,6 +2,8 @@ import { IImageQueryRespBody } from '@shared/';
 import axios from 'axios';
 import * as React from 'react';
 
+import style from './app.module.css';
+
 export const App = () => {
 
     React.useEffect(() => {
@@ -9,5 +11,5 @@ export const App = () => {
             .then(val => console.log(val.data.giphy));
     }, []);
 
-    return <>Hello world</>;
+    return <div className={style.red}>Hello world</div>;
 }
