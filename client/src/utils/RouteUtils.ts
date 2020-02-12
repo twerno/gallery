@@ -1,4 +1,3 @@
-import { IStringMap } from '@shared/';
 import { compile } from 'path-to-regexp';
 import { stringify } from 'query-string';
 
@@ -9,7 +8,7 @@ const RouteUtils = {
 
 export default RouteUtils;
 
-function makeUrl(path: string, props: any, queryMap?: IStringMap<string>): string {
+function makeUrl(path: string, props: any, queryMap?: any): string {
     return compile(path)(props) + makeQueryFromMap(queryMap);
 }
 

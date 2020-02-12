@@ -7,6 +7,7 @@ import {
 } from '@shared/';
 import axios from 'axios';
 import * as React from 'react';
+import { IGalleryUrlQuery } from 'routes/Path';
 import { useRefresh } from 'utils/ComponentHelper';
 import RouteUtils from 'utils/RouteUtils';
 
@@ -14,7 +15,7 @@ import { GiphyPaginator, PixabyPaginator } from '../helpers/Paginators';
 
 export interface IUseLoadPagesProps {
     perPageLimit: number;
-    query: string;
+    query: IGalleryUrlQuery;
 }
 
 export interface IUseLoadPagesResult {
@@ -29,7 +30,7 @@ interface ILoadImagesControllerMutableState {
     pixabyPaginator: PixabyPaginator;
     giphyPaginator: GiphyPaginator;
     loadedPages: INumberMap<boolean>;
-    query: string;
+    query: IGalleryUrlQuery;
     loadingsNo: number;
 }
 
@@ -43,13 +44,13 @@ export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPage
     // reset state after query change
     React.useEffect(() => {
         resetState(mutableState, setPageIdx, setPages);
-        mutableState.current.query = props.query;
-    }, [props.query]);
+        mutableState.current.query.q = props.query.q;
+    }, [props.query.q]);
 
     // load data from the server
     React.useEffect(() => {
         asyncLoadNextPage(props, mutableState, pageIdx, pages, setPages, doRefresh);
-    }, [props.query, pageIdx]);
+    }, [props.query.q, pageIdx]);
 
     const hasMorePages = mutableState.current.pixabyPaginator.hasMorePages(pageIdx)
         || mutableState.current.giphyPaginator.hasMorePages(pageIdx);
@@ -83,7 +84,7 @@ function initState(props: IUseLoadPagesProps): ILoadImagesControllerMutableState
     return {
         giphyPaginator: new GiphyPaginator(props.perPageLimit),
         pixabyPaginator: new PixabyPaginator(props.perPageLimit),
-        query: props.query,
+        query: { ...props.query },
         loadedPages: {},
         loadingsNo: 0
     };
@@ -92,7 +93,7 @@ function initState(props: IUseLoadPagesProps): ILoadImagesControllerMutableState
 function getApiImagesQueryUrl(pageIdx: number, props: IUseLoadPagesProps, state: ILoadImagesControllerMutableState): string {
 
     const queryParams: IImageQueryParams = {
-        q: props.query,
+        q: props.query.q,
         pixabay_offset: state.pixabyPaginator.hasMorePages(pageIdx) ? pageIdx + '' : undefined,
         giphy_offset: state.giphyPaginator.hasMorePages(pageIdx) ? pageIdx + '' : undefined,
         perPageLimit: props.perPageLimit + '',
@@ -113,7 +114,7 @@ function resetState(
     currentState.giphyPaginator.clear();
     currentState.pixabyPaginator.clear();
     currentState.loadedPages = {};
-    currentState.query = '';
+    currentState.query.q = undefined;
     currentState.loadingsNo = 0;
 }
 
@@ -135,7 +136,7 @@ function asyncLoadNextPage(
     axios.get<IImageQueryRespBody>(url)
         .then(val => {
             // promise is not longer valid -- return
-            if (props.query !== mutableState.current.query) { return; }
+            if (props.query.q !== mutableState.current.query.q) { return; }
 
             setPages([...pages, val.data.providers]);
             initPaginators(
@@ -146,7 +147,7 @@ function asyncLoadNextPage(
         })
         .finally(() => {
             // promise is not longer valid -- return
-            if (props.query !== mutableState.current.query) { return; }
+            if (props.query.q !== mutableState.current.query.q) { return; }
 
             mutableState.current.loadingsNo--;
 

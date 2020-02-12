@@ -4,12 +4,12 @@ import { Field, Formik } from 'formik';
 import * as React from 'react';
 import Headroom from 'react-headroom';
 import { useHistory } from 'react-router-dom';
-import { Path } from 'routes/Path';
+import { IGalleryUrlQuery, Path } from 'routes/Path';
 
 import HeaderSearchForm from './styled/HeaderSearchForm';
 
 export interface IGalleryHeaderProps {
-    query: string;
+    query: IGalleryUrlQuery;
 }
 
 export const GalleryHeader = (props: IGalleryHeaderProps) => {
@@ -20,9 +20,9 @@ export const GalleryHeader = (props: IGalleryHeaderProps) => {
         <Headroom style={{ backgroundColor: 'white', zIndex: 10 }}>
 
             <Formik
-                initialValues={{ q: props.query }}
+                initialValues={{ q: props.query.q }}
                 onSubmit={async (values) => {
-                    history.push(Path.galleryUrl(values.q));
+                    history.push(Path.galleryUrl({ q: values.q }));
                 }}
             >
                 {

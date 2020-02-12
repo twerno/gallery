@@ -2,7 +2,7 @@ import { IGiphyGetImageReturnModel } from './GiphyApiModel';
 import { IPixabayGetImageReturnModel } from './PixabayApiModel';
 
 export interface IImageQueryParams {
-    q: string;
+    q: string | undefined;
     pixabay_offset: string | undefined;
     giphy_offset: string | undefined;
     perPageLimit: string;

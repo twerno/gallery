@@ -21,7 +21,7 @@ export const HomePage = (props: IHomePageProps) => {
             <Formik
                 initialValues={{ q: '' }}
                 onSubmit={(values) => {
-                    history.push(Path.galleryUrl(values.q || ''));
+                    history.push(Path.galleryUrl({ q: values.q }));
                 }}
             >
                 {

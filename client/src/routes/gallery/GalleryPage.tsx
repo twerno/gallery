@@ -2,6 +2,7 @@ import AnimatedLoader from 'components/AnimatedLoader';
 import RemainingSpaceContainer from 'components/RemainingSpaceContainer';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
+import { IGalleryUrlQuery } from 'routes/Path';
 
 import { Gallery } from './components/Gallery';
 import { GalleryHeader } from './components/Header';
@@ -15,7 +16,8 @@ export interface IGalleryPage {
 const perPageLimit = 10;
 
 export const GalleryPage = (props: IGalleryPage) => {
-    const query = props.routeProps.match.params.query || '';
+    const searchParams = new URLSearchParams(props.routeProps.location.search);
+    const query: IGalleryUrlQuery = { q: searchParams.get('q') || undefined };
 
     const { pages, hasMorePages, loadNextPageHandler, isLoading, pageIdx } = useLoadImagesController(
         { perPageLimit, query }
