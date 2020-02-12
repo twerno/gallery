@@ -11,7 +11,6 @@ export const useRefresh = () => {
 
     const refresh = () => {
         setCounter(Math.random());
-        console.log('useRefresh');
     };
 
     return refresh;
