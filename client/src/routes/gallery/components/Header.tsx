@@ -29,7 +29,7 @@ export const GalleryHeader = (props: IGalleryHeaderProps) => {
                     ({ isSubmitting, handleSubmit }) => (
                         <HeaderSearchForm onSubmit={handleSubmit}>
 
-                            <Field name="q" as={Input} />
+                            <Field name="q" as={Input} aria-label="Search" />
 
                             <Button type="submit" disabled={isSubmitting} disableLeftBorder={true}>
                                 Search
