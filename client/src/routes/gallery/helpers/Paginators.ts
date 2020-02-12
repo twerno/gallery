@@ -1,4 +1,4 @@
-import { ILocalPixabayGetImageReturnModel, ILocalGiphyGetImageReturnModel } from "@shared/";
+import { ILocalGiphyGetImageReturnModel, ILocalPixabayGetImageReturnModel } from '@shared/';
 
 export abstract class AbstractImageProviderPaginator<T> {
 
@@ -17,7 +17,7 @@ export abstract class AbstractImageProviderPaginator<T> {
     public abstract computeTotalPages(model: T): void;
 }
 
-export class PixabayPaginator extends AbstractImageProviderPaginator<ILocalPixabayGetImageReturnModel> {
+export class PixabyPaginator extends AbstractImageProviderPaginator<ILocalPixabayGetImageReturnModel> {
 
     public computeTotalPages(model: ILocalPixabayGetImageReturnModel) {
         if (this.totalPages !== undefined) { return; }

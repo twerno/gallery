@@ -1,9 +1,9 @@
-import { IGiphyImage, ILocalGiphyGetImageReturnModel, ILocalPixabayGetImageReturnModel, IPixabayImage } from '@shared/';
+import { IGiphyImage } from '@shared/';
+import { LazyLoader } from 'components/LazyLoader';
 import * as React from 'react';
+import { useStyles } from 'utils/ComponentHelper';
 
 import styles from '../gallery.module.css';
-import { LazyLoader } from 'components/LazyLoader';
-import { useStyles } from 'utils/ComponentHelper';
 
 export interface IGiphyRendererProps {
     image: IGiphyImage;
@@ -23,10 +23,10 @@ export const GiphyRenderer = (props: IGiphyRendererProps) => {
     return (
         <LazyLoader
             placeholder={props.placeholder}
-            wrapper={({ children, ref }) => (
+            wrapper={({ children, ref, isLoaded }) => (
                 <div
                     ref={ref}
-                    className={useStyles(styles.galleryItem, styles.playIndicator)}
+                    className={useStyles(styles.galleryItem, isLoaded && styles.playIndicator)}
                     onMouseLeave={() => setPlaying(false)}
                     onTouchStartCapture={() => setPlaying(true)}
                     onTouchCancel={() => setPlaying(false)}

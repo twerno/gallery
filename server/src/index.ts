@@ -13,4 +13,5 @@ initServer()
             return console.log(`[${new Date().toISOString()}] server is listening on ${port}`);
         });
 
-    });
+    })
+    .catch(console.error);

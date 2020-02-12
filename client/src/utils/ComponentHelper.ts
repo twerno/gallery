@@ -1,5 +1,5 @@
 export const useStyles = (...styles: any[]): string => {
     return (styles || [])
-        .map(s => s.toString())
+        .filter(s => typeof s === 'string')
         .join(' ');
 };

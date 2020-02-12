@@ -10,6 +10,11 @@
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
+    overflow: hidden;
+    position: relative;
+    left: 0px;
+    right: 0px;
+    margin: 0px 10px;
 }
 
 .galleryItem {

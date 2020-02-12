@@ -1,8 +1,8 @@
 import { IPixabayImage } from '@shared/';
-import * as React from 'react';
-
 import { LazyLoader } from 'components/LazyLoader';
+import * as React from 'react';
 import { useStyles } from 'utils/ComponentHelper';
+
 import styles from '../gallery.module.css';
 
 

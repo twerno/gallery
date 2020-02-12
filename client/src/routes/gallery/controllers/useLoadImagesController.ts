@@ -9,7 +9,7 @@ import axios from 'axios';
 import * as React from 'react';
 import RouteUtils from 'utils/RouteUtils';
 
-import { GiphyPaginator, PixabayPaginator as PixabyPaginator } from '../helpers/Paginators';
+import { GiphyPaginator, PixabyPaginator } from '../helpers/Paginators';
 
 export interface IUseLoadPagesProps {
     perPageLimit: number;
@@ -129,12 +129,14 @@ function asyncLoadNextPage(
     currentState.loadingsNo++;
     axios.get<IImageQueryRespBody>(url)
         .then(val => {
+            // is promise still valid
             if (props.query !== currentState.query) { return; }
 
             setPages([...pages, val.data.providers]);
             initPaginators(val.data, currentState.pixabyPaginator, currentState.giphyPaginator);
         })
         .finally(() => {
+            // is promise still valid
             if (props.query !== currentState.query) { return; }
 
             currentState.loadingsNo--;
