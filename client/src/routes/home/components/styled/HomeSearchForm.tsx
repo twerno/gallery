@@ -9,14 +9,14 @@ export default styled.form`
 
     @media only screen and (max-width: 900px) {
 
-        form {
-            width: 75%;
+        & {
+            width: 80%;
         }
     }
 
     @media only screen and (max-width: 400px) {
 
-        form {
+        & {
             width: 90%;
         }
     }
