@@ -62,6 +62,25 @@ export interface IGiphyImage {
              * The height of this GIF in pixels.
              */
             height: string;
+        },
+        /**
+         * Data on a static image of this GIF with a fixed height of 100 pixels.
+         */
+        'fixed_height_small_still': {
+            /**
+              * The publicly-accessible direct URL for this GIF.
+              */
+            url: string;
+
+            /**
+             * The width of this GIF in pixels.
+             */
+            width: string;
+
+            /**
+             * The height of this GIF in pixels.
+             */
+            height: string;
         }
     }
 }

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { IImageQueryParams, IImageQueryRespBody } from '@shared/lib';
+import { IImageQueryParams, IImageQueryRespBody, IStringMap } from '@shared/lib';
 import { ImagesService } from './ImagesService';
 import { requestHandlerWraper, AsyncHandler } from '../ApiUtils';
 
@@ -14,7 +14,7 @@ export class ImagesApi {
         this.router.get('/query', requestHandlerWraper(this.queryHandler));
     }
 
-    private queryHandler: AsyncHandler<IImageQueryParams, IImageQueryRespBody, never>
+    private queryHandler: AsyncHandler<IImageQueryParams & IStringMap<string>, IImageQueryRespBody, never>
         = async (req, res) => {
             console.log('received request /query');
             const result = await this.imageService.query(req.query);

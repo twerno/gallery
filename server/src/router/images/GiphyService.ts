@@ -11,12 +11,14 @@ export class GiphyService {
         protected properties: IProperties
     ) { }
 
-    public async loadImageData(queryParams: IImageQueryParams): Promise<ILocalGiphyGetImageReturnModel> {
+    public async loadImageData(queryParams: IImageQueryParams): Promise<ILocalGiphyGetImageReturnModel | undefined> {
+
+        if (queryParams.giphy_offset === undefined) { return; }
 
         const params = {
             api_key: this.properties.GIPHY_API,
             q: queryParams.q,
-            offset: queryParams.offset,
+            offset: queryParams.giphy_offset,
             limit: queryParams.perPageLimit
         };
 

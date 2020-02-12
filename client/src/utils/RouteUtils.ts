@@ -1,19 +1,22 @@
-import { IMap } from '@shared/';
+import { IStringMap } from '@shared/';
 import { compile } from 'path-to-regexp';
 import { stringify } from 'query-string';
 
 const RouteUtils = {
     makeUrl,
+    makeQueryFromMap
 }
 
 export default RouteUtils;
 
-function makeUrl(path: string, props: any, queryString?: IMap<string>): string {
+function makeUrl(path: string, props: any, queryMap?: IStringMap<string>): string {
+    return compile(path)(props) + makeQueryFromMap(queryMap);
+}
+
+function makeQueryFromMap(queryMap?: any): string {
 
     // FIXME - is stringify a safe aproach ?
-    const q = queryString
-        ? '?' + stringify(queryString)
+    return queryMap
+        ? '?' + stringify(queryMap)
         : '';
-
-    return compile(path)(props) + q;
 }

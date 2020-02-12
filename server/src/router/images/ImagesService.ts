@@ -23,13 +23,13 @@ export class ImagesService {
 
         if (params.services !== 'pixabay') {
             const promise = this.giphyService.loadImageData(params)
-                .then(result => data.providers.push(result));
+                .then(result => result && data.providers.push(result));
             promises.push(promise);
         }
 
         if (params.services !== 'giphy') {
             const promise = this.pixabayService.loadImageData(params)
-                .then(result => data.providers.push(result));
+                .then(result => result && data.providers.push(result));
             promises.push(promise);
         }
 

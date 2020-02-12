@@ -1,23 +1,30 @@
-import { IImageQueryRespBody } from '@shared/';
-import axios from 'axios';
-import { Gallery } from 'gallery/Gallery';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
+import { Gallery } from './components/Gallery';
+import { GalleryHeader } from './components/Header';
+import { useLoadImagesController } from './controllers/useLoadImagesController';
 
 export interface IGalleryPage {
     routeProps: RouteComponentProps<{ query?: string }>;
 }
 
+const perPageLimit = 10;
+
 export const GalleryPage = (props: IGalleryPage) => {
-    const query = props.routeProps.match.params.query;
+    const query = props.routeProps.match.params.query || '';
 
-    const [state, setState] = React.useState<IImageQueryRespBody>({ providers: [] });
+    const { pages, hasMorePages, loadNextPageHandler, isLoading } = useLoadImagesController({ perPageLimit, query });
 
-    React.useEffect(() => {
-        axios.get<IImageQueryRespBody>(`/api/images/query?q=${query}`)
-            .then(val => setState(val.data));
-    }, [query]);
-
-
-    return <Gallery providers={state?.providers}></Gallery>;
+    return (
+        <>
+            <GalleryHeader query={query} />
+            <Gallery
+                pages={pages}
+                loadNextPageCallback={loadNextPageHandler}
+                hasMorePages={hasMorePages}
+                addMorePagesElement={!isLoading}
+            />
+        </>
+    );
 };
+

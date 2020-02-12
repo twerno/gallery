@@ -11,13 +11,15 @@ export class PixabayService {
         protected properties: IProperties
     ) { }
 
-    public async loadImageData(queryParams: IImageQueryParams): Promise<ILocalPixabayGetImageReturnModel> {
+    public async loadImageData(queryParams: IImageQueryParams): Promise<ILocalPixabayGetImageReturnModel | undefined> {
+
+        if (queryParams.pixabay_offset === undefined) { return; }
 
         const params = {
             key: this.properties.PIXABAY_API,
             q: queryParams.q,
-            page: queryParams.offset,
-            per_page: queryParams.perPageLimit
+            page: +queryParams.pixabay_offset + 1,
+            per_page: queryParams.perPageLimit,
         };
 
         const axiosResp = await Axios.get<IPixabayGetImageReturnModel>('https://pixabay.com/api/', { params });

@@ -1,10 +1,10 @@
-import { IMap } from '../../utils/IMap';
 import { IGiphyGetImageReturnModel } from './GiphyApiModel';
 import { IPixabayGetImageReturnModel } from './PixabayApiModel';
 
-export interface IImageQueryParams extends IMap<string> {
+export interface IImageQueryParams {
     q: string;
-    offset: string;
+    pixabay_offset: string | undefined;
+    giphy_offset: string | undefined;
     perPageLimit: string;
     services: 'giphy' | 'pixabay' | 'both';
 }
