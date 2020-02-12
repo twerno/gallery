@@ -5,7 +5,8 @@ export default styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 500px;
+  min-width: 500px;
+  width: 100%;
   height: 100%;
 `;
 

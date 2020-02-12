@@ -1,4 +1,5 @@
 import { ILocalGiphyGetImageReturnModel, ILocalPixabayGetImageReturnModel } from '@shared/';
+import AnimatedLoader from 'components/AnimatedLoader';
 import * as React from 'react';
 
 import styles = require('../gallery.module.css');
@@ -18,7 +19,7 @@ export interface IGalleryProps {
 
 export const Gallery: React.FC<IGalleryProps> = (props: IGalleryProps) => {
 
-    const placeholder = <GalleryItem><GalleryItemPlaceholder /></GalleryItem>;
+    const placeholder = <AnimatedGalleryItemPlaceholder />;
 
     const images = props.pages?.map(page =>
         (page || []).map((images, pageIdx) => {
@@ -49,3 +50,11 @@ export const Gallery: React.FC<IGalleryProps> = (props: IGalleryProps) => {
         </div>
     );
 }
+
+const AnimatedGalleryItemPlaceholder = () => (
+    <GalleryItem>
+        <GalleryItemPlaceholder>
+            <AnimatedLoader />
+        </GalleryItemPlaceholder>
+    </GalleryItem>
+);
