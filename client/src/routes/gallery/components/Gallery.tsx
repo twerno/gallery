@@ -3,12 +3,12 @@ import * as React from 'react';
 
 import styles from '../gallery.module.css';
 import { GiphyRenderer } from './GiphyRenderer';
-import { PixabyRenderer } from './PixabyRenderer';
 import { LazyLoadMore } from './LazyLoadMore';
+import { PixabyRenderer } from './PixabyRenderer';
 
 export interface IGalleryProps {
     hasMorePages: boolean;
-    addMorePagesElement: boolean;
+    canLoadMorePages: boolean;
     loadNextPageCallback: () => void;
     pages: Array<ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel>[] | undefined;
 }
@@ -36,7 +36,7 @@ export const Gallery = (props: IGalleryProps) => {
         <div className={styles.wrapper}>
             <div className={styles.gallery}>
                 {images}
-                {props.hasMorePages && props.addMorePagesElement &&
+                {props.hasMorePages && props.canLoadMorePages &&
                     <LazyLoadMore
                         placeholder={placeholder}
                         loadMoreCallback={props.loadNextPageCallback}

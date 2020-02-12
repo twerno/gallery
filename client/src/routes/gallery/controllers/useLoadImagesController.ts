@@ -7,6 +7,7 @@ import {
 } from '@shared/';
 import axios from 'axios';
 import * as React from 'react';
+import { useRefresh } from 'utils/ComponentHelper';
 import RouteUtils from 'utils/RouteUtils';
 
 import { GiphyPaginator, PixabyPaginator } from '../helpers/Paginators';
@@ -35,22 +36,23 @@ interface ILoadImagesControllerMutableState {
 export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPagesResult => {
     const [pageIdx, setPageIdx] = React.useState(0);
     const [pages, setPages] = React.useState<Array<ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel>[]>([]);
+    const doRefresh = useRefresh();
 
     const mutableState = React.useRef<ILoadImagesControllerMutableState>(initState(props));
 
     React.useEffect(() => {
-        resetState(mutableState.current, setPageIdx, setPages);
+        resetState(mutableState, setPageIdx, setPages);
         mutableState.current.query = props.query;
     }, [props.query]);
 
     React.useEffect(() => {
-        asyncLoadNextPage(props, mutableState.current, pageIdx, pages, setPages);
+        asyncLoadNextPage(props, mutableState, pageIdx, pages, setPages, doRefresh);
     }, [props.query, pageIdx]);
 
     const hasMorePages = mutableState.current.pixabyPaginator.hasMorePages(pageIdx)
         || mutableState.current.giphyPaginator.hasMorePages(pageIdx);
 
-    const isLoading: boolean = mutableState.current.loadingsNo === 0;
+    const isLoading: boolean = mutableState.current.loadingsNo > 0;
 
     const loadNextPageHandler = () => {
         setPageIdx(pageIdx + 1);
@@ -99,13 +101,13 @@ function getApiImagesQueryUrl(pageIdx: number, props: IUseLoadPagesProps, state:
 }
 
 function resetState(
-    mutableState: ILoadImagesControllerMutableState,
+    mutableState: React.MutableRefObject<ILoadImagesControllerMutableState>,
     setPageIdx: React.Dispatch<React.SetStateAction<number>>,
     setPages: React.Dispatch<React.SetStateAction<(ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[][]>>): void {
     setPageIdx(0);
     setPages([]);
 
-    const currentState = mutableState;
+    const currentState = mutableState.current;
     currentState.giphyPaginator.clear();
     currentState.pixabyPaginator.clear();
     currentState.loadedPages = {};
@@ -115,30 +117,36 @@ function resetState(
 
 function asyncLoadNextPage(
     props: IUseLoadPagesProps,
-    currentState: ILoadImagesControllerMutableState,
+    mutableState: React.MutableRefObject<ILoadImagesControllerMutableState>,
     pageIdx: number,
     pages: (ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[][],
-    setPages: React.Dispatch<React.SetStateAction<(ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[][]>>
+    setPages: React.Dispatch<React.SetStateAction<(ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[][]>>,
+    refresh: () => void,
 ) {
     // is page already loaded
-    if (currentState.loadedPages[pageIdx] === true) { return; }
-    currentState.loadedPages[pageIdx] = true;
+    if (mutableState.current.loadedPages[pageIdx] === true) { return; }
+    mutableState.current.loadedPages[pageIdx] = true;
 
-    const url = getApiImagesQueryUrl(pageIdx, props, currentState);
+    const url = getApiImagesQueryUrl(pageIdx, props, mutableState.current);
 
-    currentState.loadingsNo++;
+    mutableState.current.loadingsNo++;
     axios.get<IImageQueryRespBody>(url)
         .then(val => {
             // is promise still valid
-            if (props.query !== currentState.query) { return; }
+            if (props.query !== mutableState.current.query) { return; }
 
             setPages([...pages, val.data.providers]);
-            initPaginators(val.data, currentState.pixabyPaginator, currentState.giphyPaginator);
+            initPaginators(
+                val.data,
+                mutableState.current.pixabyPaginator,
+                mutableState.current.giphyPaginator
+            );
         })
         .finally(() => {
             // is promise still valid
-            if (props.query !== currentState.query) { return; }
+            if (props.query !== mutableState.current.query) { return; }
 
-            currentState.loadingsNo--;
+            mutableState.current.loadingsNo--;
+            refresh();
         });
 }
