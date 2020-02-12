@@ -1,3 +1,5 @@
+import AnimatedLoader from 'components/AnimatedLoader';
+import RemainingSpaceContainer from 'components/RemainingSpaceContainer';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 
@@ -19,14 +21,12 @@ export const GalleryPage = (props: IGalleryPage) => {
         { perPageLimit, query }
     );
 
-    console.log('isLoading', isLoading);
-
     return (
         <>
             <GalleryHeader query={query} />
             {pages.length === 0 &&
                 <LazyLoadMore
-                    placeholder={<div>loading</div>}
+                    placeholder={<RemainingSpaceContainer><AnimatedLoader /></RemainingSpaceContainer>}
                     loadMoreCallback={loadNextPageHandler}
                     key={`load_next_page_${0}`}
                 />

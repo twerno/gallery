@@ -1,12 +1,12 @@
+import Button from 'components/styled/Button';
+import Input from 'components/styled/Input';
+import { Field, Formik } from 'formik';
 import * as React from 'react';
 import Headroom from 'react-headroom';
-
-import { Formik, Form, Field } from 'formik';
 import { useHistory } from 'react-router-dom';
 import { Path } from 'routes/Path';
 
-import style from './Header.module.css';
-
+import HeaderSearchForm from './styled/HeaderSearchForm';
 
 export interface IGalleryHeaderProps {
     query: string;
@@ -17,7 +17,7 @@ export const GalleryHeader = (props: IGalleryHeaderProps) => {
     const history = useHistory();
 
     return (
-        <Headroom className={style.headroomWrapper} style={{ backgroundColor: 'white', zIndex: 10 }}>
+        <Headroom style={{ backgroundColor: 'white', zIndex: 10 }}>
 
             <Formik
                 initialValues={{ q: props.query }}
@@ -26,15 +26,16 @@ export const GalleryHeader = (props: IGalleryHeaderProps) => {
                 }}
             >
                 {
-                    ({ isSubmitting }) => (
-                        <Form className={style.searchForm}>
+                    ({ isSubmitting, handleSubmit }) => (
+                        <HeaderSearchForm onSubmit={handleSubmit}>
 
-                            <Field name="q" as="input" className={style.searchInput} />
+                            <Field name="q" as={Input} />
 
-                            <button type="submit" disabled={isSubmitting} className={style.searchButton}>
+                            <Button type="submit" disabled={isSubmitting} disableLeftBorder={true}>
                                 Search
-                            </button>
-                        </Form>
+                            </Button>
+
+                        </HeaderSearchForm>
                     )
                 }
             </Formik>

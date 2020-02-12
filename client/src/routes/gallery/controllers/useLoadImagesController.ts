@@ -40,11 +40,13 @@ export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPage
 
     const mutableState = React.useRef<ILoadImagesControllerMutableState>(initState(props));
 
+    // reset state after query change
     React.useEffect(() => {
         resetState(mutableState, setPageIdx, setPages);
         mutableState.current.query = props.query;
     }, [props.query]);
 
+    // load data from the server
     React.useEffect(() => {
         asyncLoadNextPage(props, mutableState, pageIdx, pages, setPages, doRefresh);
     }, [props.query, pageIdx]);
@@ -123,7 +125,7 @@ function asyncLoadNextPage(
     setPages: React.Dispatch<React.SetStateAction<(ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[][]>>,
     refresh: () => void,
 ) {
-    // is page already loaded
+    // the page is already loaded -- return
     if (mutableState.current.loadedPages[pageIdx] === true) { return; }
     mutableState.current.loadedPages[pageIdx] = true;
 
@@ -132,7 +134,7 @@ function asyncLoadNextPage(
     mutableState.current.loadingsNo++;
     axios.get<IImageQueryRespBody>(url)
         .then(val => {
-            // is promise still valid
+            // promise is not longer valid -- return
             if (props.query !== mutableState.current.query) { return; }
 
             setPages([...pages, val.data.providers]);
@@ -143,10 +145,12 @@ function asyncLoadNextPage(
             );
         })
         .finally(() => {
-            // is promise still valid
+            // promise is not longer valid -- return
             if (props.query !== mutableState.current.query) { return; }
 
             mutableState.current.loadingsNo--;
+
+            // force refresh manually; changing loadingsNo does not refresh it   
             refresh();
         });
 }

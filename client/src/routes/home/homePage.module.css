@@ -10,61 +10,11 @@
 }
 
 .home h2 {
-    font-size: 1.6rem;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-family: sans-serif;
+}
+
+.spacingBottom {
     margin-bottom: 1.05rem;
 }
-
-/* ****************** */
-/* ****************** */
-.home input {
-    padding: 7px 15px;
-    width: 50%;
-    margin-bottom: 1.05rem;
-    border: .75px solid #cecece;
-    font-size: 0.95rem;
-}
-
-@media only screen and (max-width: 900px) {
-
-    .home input {
-        width: 75%;
-    }
-}
-
-@media only screen and (max-width: 400px) {
-
-    .home input {
-        width: 90%;
-    }
-}
-
-/* ****************** */
-/* ****************** */
-
-.home form {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-.home input:focus,
-.home button {
-    outline-color: rgb(103, 156, 226);
-    background-color: v-primary;
-}
-
-.home button {
-    padding: 9px 18px;
-    background-color: transparent;
-    color: black;
-    border: 1px solid #cecece;
-    border-radius: 5px;
-    font-size: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.75px;
-}
-
-/* ****************** */
-/* ****************** */

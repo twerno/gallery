@@ -1,21 +1,24 @@
 import { ILocalGiphyGetImageReturnModel, ILocalPixabayGetImageReturnModel } from '@shared/';
 import * as React from 'react';
 
-import styles from '../gallery.module.css';
+import styles = require('../gallery.module.css');
 import { GiphyRenderer } from './GiphyRenderer';
 import { LazyLoadMore } from './LazyLoadMore';
 import { PixabyRenderer } from './PixabyRenderer';
+import GalleryItem from './styled/GalleryItem';
+import GalleryItemPlaceholder from './styled/GalleryItemPlaceholder';
 
 export interface IGalleryProps {
     hasMorePages: boolean;
     canLoadMorePages: boolean;
     loadNextPageCallback: () => void;
     pages: Array<ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel>[] | undefined;
+    className?: string;
 }
 
-export const Gallery = (props: IGalleryProps) => {
+export const Gallery: React.FC<IGalleryProps> = (props: IGalleryProps) => {
 
-    const placeholder = <Placeholder />;
+    const placeholder = <GalleryItem><GalleryItemPlaceholder /></GalleryItem>;
 
     const images = props.pages?.map(page =>
         (page || []).map((images, pageIdx) => {
@@ -33,19 +36,16 @@ export const Gallery = (props: IGalleryProps) => {
     );
 
     return (
-        <div className={styles.wrapper}>
-            <div className={styles.gallery}>
-                {images}
-                {props.hasMorePages && props.canLoadMorePages &&
-                    <LazyLoadMore
-                        placeholder={placeholder}
-                        loadMoreCallback={props.loadNextPageCallback}
-                        key={`load_next_page_${props.pages?.length}`}
-                    />
-                }
-            </div>
+        <div className={styles.galleryContainer}>
+            {images}
+            {props.hasMorePages && props.canLoadMorePages &&
+                <LazyLoadMore
+                    placeholder={placeholder}
+                    wrapper={({ children, ref }) => (<GalleryItem ref={ref}>{children}</GalleryItem>)}
+                    loadMoreCallback={props.loadNextPageCallback}
+                    key={`load_next_page_${props.pages?.length}`}
+                />
+            }
         </div>
     );
 }
-
-const Placeholder = () => <div className={styles.galleryItemPlaceholder} />;

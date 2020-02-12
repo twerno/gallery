@@ -4,6 +4,9 @@ import * as React from 'react';
 import { useStyles } from 'utils/ComponentHelper';
 
 import styles from '../gallery.module.css';
+import GalleryItem from './styled/GalleryItem';
+import GalleryItemImg from './styled/GalleryItemImg';
+import GalleryItemImgContainer from './styled/GalleryItemImgContainer';
 
 export interface IGiphyRendererProps {
     image: IGiphyImage;
@@ -12,43 +15,30 @@ export interface IGiphyRendererProps {
 
 export const GiphyRenderer = (props: IGiphyRendererProps) => {
 
-    const [isPlaying, setPlaying] = React.useState(false);
-
     const fixed_still = props.image.images.fixed_height_still;
     const small_still = props.image.images.fixed_height_small_still;
-
-    // const classes = `${styles["gallery-item"]} 
-    // ${isPlaying ? styles["galleryItem--pauseBtn"] : styles["galleryItem--playBtn"]}`;
 
     return (
         <LazyLoader
             placeholder={props.placeholder}
             wrapper={({ children, ref, isLoaded }) => (
-                <div
+                <GalleryItem
                     ref={ref}
-                    className={useStyles(styles.galleryItem, isLoaded && styles.playIndicator)}
-                    onMouseLeave={() => setPlaying(false)}
-                    onTouchStartCapture={() => setPlaying(true)}
-                    onTouchCancel={() => setPlaying(false)}
-                    onTouchCancelCapture={() => setPlaying(false)}
-                    onTouchEnd={() => setPlaying(false)}
+                    className={useStyles(isLoaded && styles.playIndicator)}
                 >
                     {children}
-                </div>
+                </GalleryItem>
             )}
         >
             {
                 ({ setLoaded, isLoaded }) =>
-                    <picture
+                    <GalleryItemImgContainer
                         onLoad={() => setLoaded(true)}
-                        className={useStyles(
-                            styles.galleryItemImgWrapper,
-                            !isLoaded && styles.galleryItemImgWrapper__hidden)
-                        }
+                        isHidden={!isLoaded}
                     >
                         <source srcSet={fixed_still?.url} media="(min-width: 600px)" />
-                        <img src={small_still.url} alt={props.image.title} className={styles.galleryItemImg} />
-                    </picture>
+                        <GalleryItemImg src={small_still.url} alt={props.image.title} />
+                    </GalleryItemImgContainer>
             }
         </LazyLoader>
     );

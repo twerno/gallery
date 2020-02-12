@@ -1,12 +1,13 @@
-import * as React from 'react';
-
 import { LazyLoader } from 'components/LazyLoader';
-import { useStyles } from 'utils/ComponentHelper';
-import styles from '../gallery.module.css';
+import * as React from 'react';
 
 export interface ILazyLoadModeProps {
     loadMoreCallback: () => void;
     placeholder: React.ReactElement;
+    wrapper?: React.FC<{
+        isLoaded: boolean,
+        ref: (node?: Element | null | undefined) => void,
+    }>;
 }
 
 export const LazyLoadMore = (props: ILazyLoadModeProps) => {
@@ -16,11 +17,7 @@ export const LazyLoadMore = (props: ILazyLoadModeProps) => {
     return (
         <LazyLoader
             placeholder={props.placeholder}
-            wrapper={({ children, ref }) => (
-                <div className={useStyles(styles.galleryItem)} ref={ref}>
-                    {children}
-                </div>
-            )}
+            wrapper={props.wrapper || DefaultWrapper}
             rootMargin="600px 0px"
         >
             {({ }) => {
@@ -33,3 +30,12 @@ export const LazyLoadMore = (props: ILazyLoadModeProps) => {
         </LazyLoader>
     );
 }
+
+const DefaultWrapper: React.FC<{
+    isLoaded: boolean,
+    ref: (node?: Element | null | undefined) => void,
+}> = ({ children, ref }) => (
+    <div ref={ref}>
+        {children}
+    </div>
+);

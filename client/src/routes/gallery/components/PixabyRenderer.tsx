@@ -1,9 +1,10 @@
 import { IPixabayImage } from '@shared/';
 import { LazyLoader } from 'components/LazyLoader';
 import * as React from 'react';
-import { useStyles } from 'utils/ComponentHelper';
 
-import styles from '../gallery.module.css';
+import GalleryItem from './styled/GalleryItem';
+import GalleryItemImg from './styled/GalleryItemImg';
+import GalleryItemImgContainer from './styled/GalleryItemImgContainer';
 
 
 export interface IPixabyRenderer {
@@ -24,24 +25,21 @@ export const PixabyRenderer = (props: IPixabyRenderer) => {
         <LazyLoader
             placeholder={props.placeholder}
             wrapper={({ children, ref }) => (
-                <div className={useStyles(styles.galleryItem)} ref={ref}>
+                <GalleryItem ref={ref}>
                     {children}
-                </div>
+                </GalleryItem >
             )}
         >
             {
                 ({ setLoaded, isLoaded }) =>
-                    <picture
+                    <GalleryItemImgContainer
                         onLoad={() => setLoaded(true)}
-                        className={useStyles(
-                            styles.galleryItemImgWrapper,
-                            !isLoaded && styles.galleryItemImgWrapper__hidden)
-                        }
+                        isHidden={!isLoaded}
                     >
                         <source srcSet={img_180} media="(min-width: 600px)" />
-                        <img src={img_small} alt={alt} className={styles.galleryItemImg} />
-                    </picture>
+                        <GalleryItemImg src={img_small} alt={alt} />
+                    </GalleryItemImgContainer>
             }
-        </LazyLoader>
+        </LazyLoader >
     );
 };

@@ -20,11 +20,9 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.ts(x?)$/,
-                loader: "ts-loader",
-                include: [
-                    path.resolve(__dirname, 'src'),
-                ]
+                test: /\.tsx?$/,
+                loaders: ['babel-loader', 'ts-loader'],
+                exclude: [path.resolve(__dirname, 'node_modules')]
             },
             {
                 test: /\.css$/,
@@ -49,7 +47,7 @@ module.exports = {
     },
     plugins: [
         new TypedCssModulesPlugin({
-            globPattern: 'src/**/*.css',
+            globPattern: 'src/**/*.module.css',
         }),
     ]
 };
