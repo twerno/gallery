@@ -3,7 +3,7 @@ import AnimatedLoader from 'components/AnimatedLoader';
 import * as React from 'react';
 import { IGalleryUrlQuery } from 'routes/Path';
 
-import styles = require('../gallery.module.css');
+import styles from '../gallery.module.css';
 import { GiphyRenderer } from './GiphyRenderer';
 import { LazyLoadMore } from './LazyLoadMore';
 import { PixabyRenderer } from './PixabyRenderer';
