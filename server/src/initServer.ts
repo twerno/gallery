@@ -21,9 +21,6 @@ export async function initServer(): Promise<{ app: express.Express, port: number
     const resources: Router = Router();
     resources.use('/js', express.static('static/js'));
     resources.use('/', express.static('static'));
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(path.resolve('./static'), 'index.html'));
-    });
     app.use(resources);
 
     const registerApi = (_path: string, api: { router: Router }) => {
@@ -36,7 +33,9 @@ export async function initServer(): Promise<{ app: express.Express, port: number
     // API
     registerApi('/api/images', new ImagesApi(imagesService));
 
-
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(path.resolve('./static'), 'index.html'));
+    });
 
     return { app, port };
 }
