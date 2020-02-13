@@ -8,7 +8,8 @@
     "build": "npm run tsc -- -b",
     "start": "npm run serve",
     "serve": "node dist/src/app.js",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "watch": "npm run tsc -- -w"
   },
   "author": "Tomasz Werno",
   "license": "ISC",

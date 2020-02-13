@@ -1,4 +1,3 @@
-import AnimatedLoader from 'components/AnimatedLoader';
 import FullScreenContainer from 'components/FullScreenContainer';
 import Alert from 'components/styled/Alert';
 import * as React from 'react';
@@ -7,7 +6,6 @@ import { IGalleryUrlQuery, Path } from 'routes/Path';
 
 import { Gallery } from './components/Gallery';
 import { GalleryHeader } from './components/Header';
-import { LazyLoadMore } from './components/LazyLoadMore';
 import { useLoadImagesController } from './controllers/useLoadImagesController';
 
 export interface IGalleryPage {
@@ -20,7 +18,7 @@ export const GalleryPage = (props: IGalleryPage) => {
     const searchParams = new URLSearchParams(props.routeProps.location.search);
     const query: IGalleryUrlQuery = { q: searchParams.get('q') || undefined };
 
-    const { pages, hasMorePages, loadNextPageHandler, isLoading, errors, triggerRealoadManually, pageIdx } = useLoadImagesController(
+    const { pages, hasMorePages, loadNextPageHandler, isLoading, errors, triggerRealoadManually } = useLoadImagesController(
         { perPageLimit, query }
     );
 
@@ -39,13 +37,6 @@ export const GalleryPage = (props: IGalleryPage) => {
         <>
             <GalleryHeader query={query} onSearchSubmitted={searchSubmittedHandler} />
             {hasErrors && <Errors errors={errors} />}
-            {!hasErrors && pages.length === 0 &&
-                <LazyLoadMore
-                    placeholder={<FullScreenContainer position='absolute'><AnimatedLoader /></FullScreenContainer>}
-                    loadMoreCallback={loadNextPageHandler}
-                    key={`load_next_page_${0}`}
-                />
-            }
             {!hasErrors && pages.length > 0 &&
                 <Gallery
                     pages={pages}

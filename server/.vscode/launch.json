@@ -11,9 +11,9 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\src\\index.ts",
+            "program": "${workspaceFolder}\\src\\app.ts",
             "outFiles": [
-                "${workspaceFolder}\\dist\\src\\index.js"
+                "${workspaceFolder}\\dist\\src\\app.js"
             ]
         }
     ]
