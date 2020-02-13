@@ -8,6 +8,13 @@ export default styled.div`
   min-width: 500px;
   width: 100%;
   height: 100%;
+
+  @media only screen and (max-width: 500px) {
+
+    & {
+      min-width: 200px;
+    }
+  }
 `;
 
 

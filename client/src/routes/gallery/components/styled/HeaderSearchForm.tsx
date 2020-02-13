@@ -1,12 +1,9 @@
 import styled from 'styled-components';
 
 export default styled.form`
-    width: 90%;
+    width: 100%;
     display: flex;
-    justify-content: center;
-    align-items: baseline;
     flex-direction: row;
-    padding: 10px 0px;
-    margin: 0px auto;
+    padding: 10px 10px;
     background-color: white;
 `;
