@@ -1,4 +1,5 @@
 import express, { Router } from 'express';
+import compression from 'compression';
 
 import { loadProperties } from './helpers/Properties';
 import { ImagesApi } from './router/images/ImagesApi';
@@ -8,6 +9,7 @@ const port = process.env.PORT && +process.env.PORT || 3333;
 
 export async function initServer(): Promise<{ app: express.Express, port: number }> {
     const app = express();
+    app.use(compression());
 
     // load properties
     const properties = loadProperties();
