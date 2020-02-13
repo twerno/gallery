@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "tsc": "tsc",
-    "start": "webpack-dev-server --config webpack.dev.js",
-    "build-prod": "webpack --config webpack.prod.js"
+    "start": "npm run build-shared && webpack-dev-server --config webpack.dev.js",
+    "build-prod": "npm run build-shared && webpack --config webpack.prod.js",
+    "build-shared": "cd ../server/shared && npm run tsc"
   },
   "author": "Tomasz Werno",
   "license": "ISC",
