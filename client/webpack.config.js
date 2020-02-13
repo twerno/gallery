@@ -12,7 +12,7 @@ module.exports = {
     },
     resolve: {
         alias: {
-            '@shared': path.resolve('../shared/lib'),
+            '@shared': path.resolve('../server/shared/lib'),
         },
         extensions: [".ts", ".tsx", ".js", ".css"],
         modules: ['src', 'node_modules'],

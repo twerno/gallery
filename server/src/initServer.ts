@@ -15,6 +15,10 @@ export async function initServer(): Promise<{ app: express.Express, port: number
     // router
     const router = Router();
     app.use(router);
+    const resources: Router = Router();
+    resources.use('/js', express.static('static/js'));
+    resources.use('/', express.static('static'));
+    app.use(resources);
 
     const registerApi = (path: string, api: { router: Router }) => {
         router.use(path, api.router);
@@ -25,11 +29,6 @@ export async function initServer(): Promise<{ app: express.Express, port: number
 
     // API
     registerApi('/api/images', new ImagesApi(imagesService));
-
-    // tick
-    app.get("/", (req, res) => {
-        res.send("Server is working");
-    });
 
     return { app, port };
 }
