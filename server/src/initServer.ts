@@ -4,7 +4,7 @@ import { loadProperties } from './helpers/Properties';
 import { ImagesApi } from './router/images/ImagesApi';
 import { ImagesService } from './router/images/ImagesService';
 
-const port = typeof process.env.PORT === 'number' && process.env.PORT || 3333;
+const port = process.env.PORT && +process.env.PORT || 3333;
 
 export async function initServer(): Promise<{ app: express.Express, port: number }> {
     const app = express();
