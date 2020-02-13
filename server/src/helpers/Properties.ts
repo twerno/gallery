@@ -8,5 +8,10 @@ export interface IProperties {
 
 export const loadProperties = (): IProperties => {
     const file = fs.readFileSync('./properties.yaml', 'utf8');
-    return yaml.safeLoad(file);
+    const result = yaml.safeLoad(file);
+    return {
+        GIPHY_API: process.env.GIPHY_API,
+        PIXABAY_API: process.env.PIXABAY_API,
+        ...result
+    };
 }

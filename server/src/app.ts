@@ -1,35 +1,17 @@
-import express, { Router } from 'express';
+// tslint:disable-next-line:no-var-requires
+require('module-alias/register');
 
-import { loadProperties } from './helpers/Properties';
-import { ImagesApi } from './router/images/ImagesApi';
-import { ImagesService } from './router/images/ImagesService';
+import { initServer } from './initServer';
 
-const port = 3333;
+initServer()
+    .then(({ app, port }) => {
 
-export async function initServer(): Promise<{ app: express.Express, port: number }> {
-    const app = express();
+        app.listen(port, err => {
+            if (err) {
+                return console.error(err);
+            }
+            return console.log(`[${new Date().toISOString()}] server is listening on ${port}`);
+        });
 
-    // load properties
-    const properties = loadProperties();
-
-    // router
-    const router = Router();
-    app.use(router);
-
-    const registerApi = (path: string, api: { router: Router }) => {
-        router.use(path, api.router);
-    }
-
-    // services
-    const imagesService = new ImagesService(properties);
-
-    // API
-    registerApi('/api/images', new ImagesApi(imagesService));
-
-    // tick
-    app.get("/", (req, res) => {
-        res.send("Server is working");
-    });
-
-    return { app, port };
-}
+    })
+    .catch(console.error);

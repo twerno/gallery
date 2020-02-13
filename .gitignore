@@ -104,4 +104,4 @@ dist
 .tern-port
 /server/properties.yaml
 
-/shared/lib/**
+server/shared/lib/**

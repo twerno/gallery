@@ -104,7 +104,8 @@ function initState(props: IUseLoadPagesProps): ILoadImagesControllerMutableState
     };
 }
 
-function getApiImagesQueryUrl(pageIdx: number, props: IUseLoadPagesProps, state: ILoadImagesControllerMutableState): string {
+function getApiImagesQueryUrl(props: IUseLoadPagesProps, state: ILoadImagesControllerMutableState): string {
+    const pageIdx: number = state.pageIdx;
 
     const queryParams: IImageQueryParams = {
         q: props.query.q,
@@ -149,7 +150,7 @@ function asyncLoadNextPage(
 
     setErrors([]);
 
-    const url = getApiImagesQueryUrl(mutableState.current.pageIdx, props, mutableState.current);
+    const url = getApiImagesQueryUrl(props, mutableState.current);
 
     mutableState.current.loadingsNo++;
     axios.get<IImageQueryRespBody>(url)
