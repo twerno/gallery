@@ -14,7 +14,15 @@ export function requestHandlerWraper<P extends Params, ResBody, ReqBody>(handler
             handler(req, res, next)
                 .catch(e => {
                     console.log(e);
-                    res.sendStatus(httpCodes.INTERNAL_SERVER_ERROR);
+                    if (typeof e.message === 'string' && typeof e.response.status === 'number') {
+                        res.status(e.response.status).send(e.message);
+                    }
+                    else if (typeof e.status === 'number' && typeof e.statusText === 'string') {
+                        res.status(e.status).json(e.statusText).send();
+                    }
+                    else {
+                        res.sendStatus(httpCodes.INTERNAL_SERVER_ERROR);
+                    }
                 });
         };
 

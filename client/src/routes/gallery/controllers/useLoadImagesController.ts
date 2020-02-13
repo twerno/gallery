@@ -24,6 +24,7 @@ export interface IUseLoadPagesResult {
     hasMorePages: boolean;
     loadNextPageHandler: () => void;
     isLoading: boolean;
+    errors: string[];
 }
 
 interface ILoadImagesControllerMutableState {
@@ -36,6 +37,7 @@ interface ILoadImagesControllerMutableState {
 
 export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPagesResult => {
     const [pageIdx, setPageIdx] = React.useState(0);
+    const [errors, setErrors] = React.useState<string[]>([]);
     const [pages, setPages] = React.useState<Array<ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel>[]>([]);
     const doRefresh = useRefresh();
 
@@ -43,13 +45,13 @@ export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPage
 
     // reset state after query change
     React.useEffect(() => {
-        resetState(mutableState, setPageIdx, setPages);
+        resetState(mutableState, setPageIdx, setPages, setErrors);
         mutableState.current.query.q = props.query.q;
     }, [props.query.q]);
 
     // load data from the server
     React.useEffect(() => {
-        asyncLoadNextPage(props, mutableState, pageIdx, pages, setPages, doRefresh);
+        asyncLoadNextPage(props, mutableState, pageIdx, pages, setPages, doRefresh, setErrors, setPageIdx);
     }, [props.query.q, pageIdx]);
 
     const hasMorePages = mutableState.current.pixabyPaginator.hasMorePages(pageIdx)
@@ -66,7 +68,8 @@ export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPage
         pageIdx,
         pages,
         loadNextPageHandler,
-        isLoading
+        isLoading,
+        errors
     };
 };
 
@@ -106,9 +109,12 @@ function getApiImagesQueryUrl(pageIdx: number, props: IUseLoadPagesProps, state:
 function resetState(
     mutableState: React.MutableRefObject<ILoadImagesControllerMutableState>,
     setPageIdx: React.Dispatch<React.SetStateAction<number>>,
-    setPages: React.Dispatch<React.SetStateAction<(ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[][]>>): void {
+    setPages: React.Dispatch<React.SetStateAction<(ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[][]>>,
+    setErrors: React.Dispatch<React.SetStateAction<string[]>>,
+): void {
     setPageIdx(0);
     setPages([]);
+    setErrors([]);
 
     const currentState = mutableState.current;
     currentState.giphyPaginator.clear();
@@ -125,6 +131,8 @@ function asyncLoadNextPage(
     pages: (ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[][],
     setPages: React.Dispatch<React.SetStateAction<(ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[][]>>,
     refresh: () => void,
+    setErrors: React.Dispatch<React.SetStateAction<string[]>>,
+    setPageIdx: React.Dispatch<React.SetStateAction<number>>,
 ) {
     // the page is already loaded -- return
     if (mutableState.current.loadedPages[pageIdx] === true) { return; }
@@ -144,6 +152,15 @@ function asyncLoadNextPage(
                 mutableState.current.pixabyPaginator,
                 mutableState.current.giphyPaginator
             );
+        })
+        .catch(err => {
+            resetState(mutableState, setPageIdx, setPages, setErrors);
+            if (typeof err.message === 'string') {
+                setErrors([err.message]);
+            }
+            else {
+                setErrors([err.toString()]);
+            }
         })
         .finally(() => {
             // promise is not longer valid -- return
