@@ -1,5 +1,6 @@
 import express, { Router } from 'express';
 import compression from 'compression';
+import path from 'path';
 
 import { loadProperties } from './helpers/Properties';
 import { ImagesApi } from './router/images/ImagesApi';
@@ -20,17 +21,22 @@ export async function initServer(): Promise<{ app: express.Express, port: number
     const resources: Router = Router();
     resources.use('/js', express.static('static/js'));
     resources.use('/', express.static('static'));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(path.resolve('./static'), 'index.html'));
+    });
     app.use(resources);
 
-    const registerApi = (path: string, api: { router: Router }) => {
-        router.use(path, api.router);
-    }
+    const registerApi = (_path: string, api: { router: Router }) => {
+        router.use(_path, api.router);
+    };
 
     // services
     const imagesService = new ImagesService(properties);
 
     // API
     registerApi('/api/images', new ImagesApi(imagesService));
+
+
 
     return { app, port };
 }
