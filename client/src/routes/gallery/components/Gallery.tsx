@@ -1,6 +1,7 @@
 import { ILocalGiphyGetImageReturnModel, ILocalPixabayGetImageReturnModel } from '@shared/';
 import AnimatedLoader from 'components/AnimatedLoader';
 import * as React from 'react';
+import { IGalleryUrlQuery } from 'routes/Path';
 
 import styles = require('../gallery.module.css');
 import { GiphyRenderer } from './GiphyRenderer';
@@ -10,11 +11,11 @@ import GalleryItem from './styled/GalleryItem';
 import GalleryItemPlaceholder from './styled/GalleryItemPlaceholder';
 
 export interface IGalleryProps {
-    hasMorePages: boolean;
     canLoadMorePages: boolean;
     loadNextPageCallback: () => void;
     pages: Array<ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel>[] | undefined;
     className?: string;
+    query: IGalleryUrlQuery;
 }
 
 export const Gallery: React.FC<IGalleryProps> = (props: IGalleryProps) => {
@@ -39,12 +40,12 @@ export const Gallery: React.FC<IGalleryProps> = (props: IGalleryProps) => {
     return (
         <div className={styles.galleryContainer}>
             {images}
-            {props.hasMorePages && props.canLoadMorePages &&
+            {props.canLoadMorePages &&
                 <LazyLoadMore
                     placeholder={placeholder}
                     wrapper={({ children, ref }) => (<GalleryItem ref={ref}>{children}</GalleryItem>)}
                     loadMoreCallback={props.loadNextPageCallback}
-                    key={`load_next_page_${props.pages?.length}`}
+                    key={`load_next_page_${props.query.q}_${props.pages?.length}`}
                 />
             }
         </div>

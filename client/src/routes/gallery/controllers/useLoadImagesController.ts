@@ -25,6 +25,10 @@ export interface IUseLoadPagesResult {
     loadNextPageHandler: () => void;
     isLoading: boolean;
     errors: string[];
+    /**
+     * 
+     */
+    triggerRealoadManually: () => void;
 }
 
 interface ILoadImagesControllerMutableState {
@@ -33,10 +37,10 @@ interface ILoadImagesControllerMutableState {
     loadedPages: INumberMap<boolean>;
     query: IGalleryUrlQuery;
     loadingsNo: number;
+    pageIdx: number;
 }
 
 export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPagesResult => {
-    const [pageIdx, setPageIdx] = React.useState(0);
     const [errors, setErrors] = React.useState<string[]>([]);
     const [pages, setPages] = React.useState<Array<ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel>[]>([]);
     const doRefresh = useRefresh();
@@ -45,31 +49,37 @@ export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPage
 
     // reset state after query change
     React.useEffect(() => {
-        resetState(mutableState, setPageIdx, setPages, setErrors);
+        resetState(mutableState, setPages, setErrors);
         mutableState.current.query.q = props.query.q;
     }, [props.query.q]);
 
+    const triggerRealoadManually = () => {
+        asyncLoadNextPage(props, mutableState, setPages, doRefresh, setErrors);
+    }
+
     // load data from the server
     React.useEffect(() => {
-        asyncLoadNextPage(props, mutableState, pageIdx, pages, setPages, doRefresh, setErrors, setPageIdx);
-    }, [props.query.q, pageIdx]);
+        triggerRealoadManually();
+    }, [props.query.q, mutableState.current.pageIdx]);
 
-    const hasMorePages = mutableState.current.pixabyPaginator.hasMorePages(pageIdx)
-        || mutableState.current.giphyPaginator.hasMorePages(pageIdx);
+    const hasMorePages = mutableState.current.pixabyPaginator.hasMorePages(mutableState.current.pageIdx)
+        || mutableState.current.giphyPaginator.hasMorePages(mutableState.current.pageIdx);
 
     const isLoading: boolean = mutableState.current.loadingsNo > 0;
 
     const loadNextPageHandler = () => {
-        setPageIdx(pageIdx + 1);
+        mutableState.current.pageIdx++;
+        doRefresh();
     };
 
     return {
         hasMorePages,
-        pageIdx,
+        pageIdx: mutableState.current.pageIdx,
         pages,
         loadNextPageHandler,
         isLoading,
-        errors
+        errors,
+        triggerRealoadManually
     };
 };
 
@@ -89,7 +99,8 @@ function initState(props: IUseLoadPagesProps): ILoadImagesControllerMutableState
         pixabyPaginator: new PixabyPaginator(props.perPageLimit),
         query: { ...props.query },
         loadedPages: {},
-        loadingsNo: 0
+        loadingsNo: 0,
+        pageIdx: 0
     };
 }
 
@@ -108,11 +119,9 @@ function getApiImagesQueryUrl(pageIdx: number, props: IUseLoadPagesProps, state:
 
 function resetState(
     mutableState: React.MutableRefObject<ILoadImagesControllerMutableState>,
-    setPageIdx: React.Dispatch<React.SetStateAction<number>>,
     setPages: React.Dispatch<React.SetStateAction<(ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[][]>>,
     setErrors: React.Dispatch<React.SetStateAction<string[]>>,
 ): void {
-    setPageIdx(0);
     setPages([]);
     setErrors([]);
 
@@ -120,25 +129,27 @@ function resetState(
     currentState.giphyPaginator.clear();
     currentState.pixabyPaginator.clear();
     currentState.loadedPages = {};
-    currentState.query.q = undefined;
     currentState.loadingsNo = 0;
+    currentState.pageIdx = 0;
+
+    // clearing query will break promise resolution
+    // currentState.query.q = undefined;
 }
 
 function asyncLoadNextPage(
     props: IUseLoadPagesProps,
     mutableState: React.MutableRefObject<ILoadImagesControllerMutableState>,
-    pageIdx: number,
-    pages: (ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[][],
     setPages: React.Dispatch<React.SetStateAction<(ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[][]>>,
-    refresh: () => void,
-    setErrors: React.Dispatch<React.SetStateAction<string[]>>,
-    setPageIdx: React.Dispatch<React.SetStateAction<number>>,
+    doRefresh: () => void,
+    setErrors: React.Dispatch<React.SetStateAction<string[]>>
 ) {
     // the page is already loaded -- return
-    if (mutableState.current.loadedPages[pageIdx] === true) { return; }
-    mutableState.current.loadedPages[pageIdx] = true;
+    if (mutableState.current.loadedPages[mutableState.current.pageIdx] === true) { return; }
+    mutableState.current.loadedPages[mutableState.current.pageIdx] = true;
 
-    const url = getApiImagesQueryUrl(pageIdx, props, mutableState.current);
+    setErrors([]);
+
+    const url = getApiImagesQueryUrl(mutableState.current.pageIdx, props, mutableState.current);
 
     mutableState.current.loadingsNo++;
     axios.get<IImageQueryRespBody>(url)
@@ -146,7 +157,7 @@ function asyncLoadNextPage(
             // promise is not longer valid -- return
             if (props.query.q !== mutableState.current.query.q) { return; }
 
-            setPages([...pages, val.data.providers]);
+            setPages((prevState) => [...prevState, val.data.providers]);
             initPaginators(
                 val.data,
                 mutableState.current.pixabyPaginator,
@@ -154,7 +165,10 @@ function asyncLoadNextPage(
             );
         })
         .catch(err => {
-            resetState(mutableState, setPageIdx, setPages, setErrors);
+            // promise is not longer valid -- return
+            if (props.query.q !== mutableState.current.query.q) { return; }
+
+            resetState(mutableState, setPages, setErrors);
             if (typeof err.message === 'string') {
                 setErrors([err.message]);
             }
@@ -168,7 +182,7 @@ function asyncLoadNextPage(
 
             mutableState.current.loadingsNo--;
 
-            // force refresh manually; changing loadingsNo does not refresh it   
-            refresh();
+            // force refresh manually; changing loadingsNo does not trigger refresh
+            doRefresh();
         });
 }
