@@ -8,7 +8,7 @@ import {
 import axios from 'axios';
 import * as React from 'react';
 import { IGalleryUrlQuery } from 'routes/Path';
-import { useRefresh } from 'utils/ComponentHelper';
+import { useIsMounted, useRefresh } from 'utils/ComponentHelper';
 import RouteUtils from 'utils/RouteUtils';
 
 import { GiphyPaginator, PixabyPaginator } from '../helpers/Paginators';
@@ -44,6 +44,7 @@ export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPage
     const [errors, setErrors] = React.useState<string[]>([]);
     const [pages, setPages] = React.useState<Array<ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel>[]>([]);
     const doRefresh = useRefresh();
+    const { isMounted } = useIsMounted();
 
     const mutableState = React.useRef<ILoadImagesControllerMutableState>(initState(props));
 
@@ -54,7 +55,7 @@ export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPage
     }, [props.query.q]);
 
     const triggerRealoadManually = () => {
-        asyncLoadNextPage(props, mutableState, setPages, doRefresh, setErrors);
+        asyncLoadNextPage(props, mutableState, setPages, doRefresh, setErrors, isMounted);
     }
 
     // load data from the server
@@ -142,7 +143,8 @@ function asyncLoadNextPage(
     mutableState: React.MutableRefObject<ILoadImagesControllerMutableState>,
     setPages: React.Dispatch<React.SetStateAction<(ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[][]>>,
     doRefresh: () => void,
-    setErrors: React.Dispatch<React.SetStateAction<string[]>>
+    setErrors: React.Dispatch<React.SetStateAction<string[]>>,
+    isMounted: () => boolean
 ) {
     // the page is already loaded -- return
     if (mutableState.current.loadedPages[mutableState.current.pageIdx] === true) { return; }
@@ -156,7 +158,7 @@ function asyncLoadNextPage(
     axios.get<IImageQueryRespBody>(url)
         .then(val => {
             // promise is not longer valid -- return
-            if (props.query.q !== mutableState.current.query.q) { return; }
+            if (!isMounted() || props.query.q !== mutableState.current.query.q) { return; }
 
             setPages((prevState) => [...prevState, val.data.providers]);
             initPaginators(
@@ -167,7 +169,7 @@ function asyncLoadNextPage(
         })
         .catch(err => {
             // promise is not longer valid -- return
-            if (props.query.q !== mutableState.current.query.q) { return; }
+            if (!isMounted() || props.query.q !== mutableState.current.query.q) { return; }
 
             resetState(mutableState, setPages, setErrors);
             if (typeof err.message === 'string') {
@@ -179,7 +181,7 @@ function asyncLoadNextPage(
         })
         .finally(() => {
             // promise is not longer valid -- return
-            if (props.query.q !== mutableState.current.query.q) { return; }
+            if (!isMounted() || props.query.q !== mutableState.current.query.q) { return; }
 
             mutableState.current.loadingsNo--;
 
