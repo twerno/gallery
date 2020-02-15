@@ -17,12 +17,12 @@ export const useRefresh = () => {
 };
 
 export const useIsMounted = () => {
-    const ref = React.useRef<{ isMounted: boolean }>({ isMounted: true });
+    const _isMounted = React.useRef<boolean>(true);
 
     React.useEffect(() => {
-        ref.current.isMounted = true;
-        return () => { ref.current.isMounted = false; }
+        _isMounted.current = true;
+        return () => { _isMounted.current = false; }
     }, []);
 
-    return { isMounted: () => ref.current.isMounted };
+    return { isMounted: () => _isMounted.current };
 }

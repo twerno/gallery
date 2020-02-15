@@ -1,12 +1,10 @@
 import { IGiphyImage } from '@shared/';
 import { LazyLoader } from 'components/LazyLoader';
 import * as React from 'react';
-import { useStyles } from 'utils/ComponentHelper';
 
-import styles from '../gallery.module.css';
-import GalleryItem from './styled/GalleryItem';
 import GalleryItemImg from './styled/GalleryItemImg';
 import GalleryItemImgContainer from './styled/GalleryItemImgContainer';
+import { GalleryItemWithPlayIndicator } from './styled/GalleryItemWithPlayIndicator';
 
 export interface IGiphyRendererProps {
     image: IGiphyImage;
@@ -22,12 +20,12 @@ export const GiphyRenderer = (props: IGiphyRendererProps) => {
         <LazyLoader
             placeholder={props.placeholder}
             wrapper={({ children, ref, isLoaded }) => (
-                <GalleryItem
+                <GalleryItemWithPlayIndicator
                     ref={ref}
-                    className={useStyles(isLoaded && styles.playIndicator)}
+                    indicator={isLoaded ? 'play' : 'none'}
                 >
                     {children}
-                </GalleryItem>
+                </GalleryItemWithPlayIndicator>
             )}
         >
             {

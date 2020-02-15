@@ -5,8 +5,8 @@ import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Path } from 'routes/Path';
 
+import HomeContainer from './components/styled/HomeContainer';
 import HomeSearchForm from './components/styled/HomeSearchForm';
-import styles from './homePage.module.css';
 
 export interface IHomePageProps {
 }
@@ -16,8 +16,8 @@ export const HomePage = (props: IHomePageProps) => {
     const history = useHistory();
 
     return (
-        <div className={styles.home}>
-            <h2>React Gallery</h2>
+        <HomeContainer>
+            <h1>React Gallery</h1>
             <Formik
                 initialValues={{ q: '' }}
                 onSubmit={(values) => {
@@ -25,14 +25,14 @@ export const HomePage = (props: IHomePageProps) => {
                 }}
             >
                 {
-                    ({ isSubmitting, handleSubmit, handleReset, ...props }) => (
-                        <HomeSearchForm onSubmit={handleSubmit} onReset={handleReset} {...props}>
-                            <Field name="q" as={Input} className={styles.spacingBottom} aria-label="Search" />
+                    ({ isSubmitting, handleSubmit, handleReset }) => (
+                        <HomeSearchForm>
+                            <Field name="q" as={Input} aria-label="Search" />
                             <Button type="submit" disabled={isSubmitting}>Search</Button>
                         </HomeSearchForm>
                     )
                 }
             </Formik>
-        </div>
+        </HomeContainer>
     );
 }

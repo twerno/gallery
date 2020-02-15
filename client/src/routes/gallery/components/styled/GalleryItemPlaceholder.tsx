@@ -1,3 +1,4 @@
+import { breakpoints } from 'globalStyles';
 import styled from 'styled-components';
 
 export default styled.div`
@@ -9,7 +10,7 @@ export default styled.div`
   width: 100%;
   height: 100%;
 
-  @media only screen and (max-width: 500px) {
+  @media only screen and (max-width: ${breakpoints.md}) {
 
     & {
       min-width: 200px;

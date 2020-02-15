@@ -3,10 +3,10 @@ import AnimatedLoader from 'components/AnimatedLoader';
 import * as React from 'react';
 import { IGalleryUrlQuery } from 'routes/Path';
 
-import styles from '../gallery.module.css';
 import { GiphyRenderer } from './GiphyRenderer';
 import { LazyLoadMore } from './LazyLoadMore';
 import { PixabyRenderer } from './PixabyRenderer';
+import GalleryContainer from './styled/GalleryContainer';
 import GalleryItem from './styled/GalleryItem';
 import GalleryItemPlaceholder from './styled/GalleryItemPlaceholder';
 
@@ -38,7 +38,7 @@ export const Gallery: React.FC<IGalleryProps> = (props: IGalleryProps) => {
     );
 
     return (
-        <div className={styles.galleryContainer}>
+        <GalleryContainer>
             {images}
             {props.canLoadMorePages &&
                 <LazyLoadMore
@@ -48,7 +48,7 @@ export const Gallery: React.FC<IGalleryProps> = (props: IGalleryProps) => {
                     key={`load_next_page_${props.query.q}_${props.pages?.length}`}
                 />
             }
-        </div>
+        </GalleryContainer>
     );
 }
 
