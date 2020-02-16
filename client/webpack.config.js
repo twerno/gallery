@@ -1,7 +1,7 @@
 const path = require('path');
 
 const isDevelopment = process.env.NODE_ENV === 'development';
-console.log(isDevelopment);
+console.log(`>>>\n${isDevelopment ? 'DEVELOPMENT' : 'PRODUCTION'}\n>>>`);
 
 module.exports = {
     entry: './src/index.tsx',
@@ -14,21 +14,27 @@ module.exports = {
         alias: {
             '@shared': path.resolve('../server/shared/lib'),
         },
-        extensions: [".ts", ".tsx", ".js", ".css"],
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
         modules: ['src', 'node_modules'],
     },
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
+                test: /\.(tsx|ts|js|jsx)$/,
+                exclude: /node_modules/,
                 use: [
                     {
                         loader: 'babel-loader',
                         options: {
-                            presets: ['@babel/preset-env', '@babel/preset-typescript', '@babel/preset-react'],
+                            presets: [
+                                ['@babel/preset-env', { "useBuiltIns": "usage", "corejs": "3.6.4" }],
+                                '@babel/preset-react',
+                                '@babel/preset-typescript',
+                            ],
                             "plugins": [
-                                [
-                                    "babel-plugin-styled-components",
+                                '@babel/plugin-proposal-class-properties',
+                                '@babel/plugin-proposal-object-rest-spread',
+                                ["babel-plugin-styled-components",
                                     {
                                         "displayName": isDevelopment,
                                         "fileName": isDevelopment
@@ -39,29 +45,9 @@ module.exports = {
                     },
                     {
                         loader: 'ts-loader'
-                    }
-                ],
-                exclude: [path.resolve(__dirname, 'node_modules')]
+                    },
+                ]
             },
-            // {
-            //     test: /\.css$/,
-            //     use: [
-            //         {
-            //             /** Inject CSS into the DOM. */
-            //             loader: 'style-loader'
-            //         },
-            //         {
-            //             /** The css-loader interprets @import and url() like import/require() and will resolve them. */
-            //             loader: 'css-loader',
-            //             options: {
-            //                 modules: {
-            //                     mode: 'local',
-            //                     localIdentName: '[name]__[local]--[hash:base64:5]',
-            //                 },
-            //             },
-            //         }
-            //     ],
-            // },
         ]
     },
     plugins: [
