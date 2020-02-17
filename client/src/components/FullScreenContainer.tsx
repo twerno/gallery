@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 
 interface IFullScreenContainerProps {
-  position: 'relative' | 'absolute';
+  position: 'relative' | 'absolute' | 'fixed';
 }
 
 export default styled.div<IFullScreenContainerProps>`
   position: ${props => props.position};
-  width: 100%;
   top: 0px;
-  bottom: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
 `;

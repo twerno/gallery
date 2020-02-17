@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 
-export default styled.div`
+export interface IAnimatedLoaderProps {
+  mode?: 'light' | 'dark';
+}
+
+export default styled.div<IAnimatedLoaderProps>`
   background-color: rgba(0, 0, 0, 0.05);
   position: relative;
   
@@ -13,7 +17,9 @@ export default styled.div`
 
   
   &::before {
-    border: .25rem solid rgba(1, 1, 1, 0.3);
+  border: .25rem solid ${props => props.mode === 'light'
+    ? 'rgba(255, 255, 255, 0.3)'
+    : 'rgba(0, 0, 0, 0.3)'};
     animation: 4s infinite spin linear;
   }
 

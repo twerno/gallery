@@ -1,7 +1,7 @@
 export interface IPixabayImage {
   /**
-    * A unique identifier for this image.
-    */
+   * A unique identifier for this image.
+   */
   id: string;
 
   /**

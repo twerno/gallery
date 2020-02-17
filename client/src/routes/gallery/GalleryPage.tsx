@@ -4,8 +4,9 @@ import * as React from 'react';
 import { RouteComponentProps, useHistory } from 'react-router';
 import { IGalleryUrlQuery, Path } from 'routes/Path';
 
-import { Gallery } from './components/Gallery';
-import { GalleryHeader } from './components/Header';
+import { FullScreenPreview, IPreviewImage } from './components/FullScreenPreview';
+import { GalleryContainer } from './components/GalleryContainer';
+import { GalleryHeader } from './components/GalleryHeader';
 import { useLoadImagesController } from './controllers/useLoadImagesController';
 
 export interface IGalleryPage {
@@ -21,6 +22,8 @@ export const GalleryPage = (props: IGalleryPage) => {
     const { pages, hasMorePages, loadNextPageHandler, isLoading, errors, triggerRealoadManually } = useLoadImagesController(
         { perPageLimit, query }
     );
+
+    const [preview, setPreview] = React.useState<IPreviewImage>(undefined);
 
     const hasErrors = errors.length > 0;
 
@@ -38,12 +41,17 @@ export const GalleryPage = (props: IGalleryPage) => {
             <GalleryHeader query={query} onSearchSubmitted={searchSubmittedHandler} />
             {hasErrors && <Errors errors={errors} />}
             {!hasErrors && pages.length > 0 &&
-                <Gallery
+                <GalleryContainer
                     pages={pages}
-                    loadNextPageCallback={loadNextPageHandler}
-                    canLoadMorePages={!isLoading && hasMorePages}
+                    loadMoreCallback={loadNextPageHandler}
+                    canLoadMore={!isLoading && hasMorePages}
                     query={query}
+                    disable={!!preview}
+                    setPreview={setPreview}
                 />
+            }
+            {preview &&
+                <FullScreenPreview preview={preview} setPreview={setPreview} />
             }
         </>
     );

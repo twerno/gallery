@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useInView } from 'react-intersection-observer';
 
 export interface ILazyLoaderProps {
-    placeholder: React.ReactElement;
+    loadingPlaceholder: React.ReactElement;
     wrapper: React.FC<{
         isLoaded: boolean,
         ref: (node?: Element | null | undefined) => void,
@@ -29,7 +29,7 @@ export const LazyLoader = (props: ILazyLoaderProps) => {
             isLoaded,
             children: (
                 <>
-                    {!isLoaded && props.placeholder}
+                    {!isLoaded && props.loadingPlaceholder}
                     {inView && props.children({ setLoaded, isLoaded })}
                 </>
             )

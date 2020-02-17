@@ -1,3 +1,20 @@
+interface IGiphyImgData {
+    /**
+     * The publicly-accessible direct URL for this GIF for this size of the GIF.
+     */
+    url: string;
+
+    /**
+     * The width of this GIF in pixels.
+     */
+    width: string;
+
+    /**
+     * The height of this GIF in pixels.
+     */
+    height: string;
+}
+
 export interface IGiphyImage {
     /**
      * This GIF's unique ID
@@ -26,62 +43,27 @@ export interface IGiphyImage {
         /**
          * Data on versions of this GIF with a fixed height of 200 pixels. Good for mobile use.
          */
-        'fixed_height'?: {
-            /**
-             * The publicly-accessible direct URL for this GIF for this size of the GIF.
-             */
-            url: string;
-
-            /**
-             * The width of this GIF in pixels.
-             */
-            width: string;
-
-            /**
-             * The height of this GIF in pixels.
-             */
-            height: string;
-        },
+        'fixed_height'?: IGiphyImgData
 
         /**
          * Data on a static image of this GIF with a fixed height of 200 pixels.
          */
-        'fixed_height_still'?: {
+        'fixed_height_still'?: IGiphyImgData,
 
-            /**
-             * The publicly-accessible direct URL for this GIF.
-             */
-            url: string;
+        /**
+         * Data on versions of this GIF with a fixed height of 100 pixels. Good for mobile keyboards.
+         */
+        'fixed_height_small'?: IGiphyImgData,
 
-            /**
-             * The width of this GIF in pixels.
-             */
-            width: string;
-
-            /**
-             * The height of this GIF in pixels.
-             */
-            height: string;
-        },
         /**
          * Data on a static image of this GIF with a fixed height of 100 pixels.
          */
-        'fixed_height_small_still': {
-            /**
-              * The publicly-accessible direct URL for this GIF.
-              */
-            url: string;
+        'fixed_height_small_still': IGiphyImgData,
 
-            /**
-             * The width of this GIF in pixels.
-             */
-            width: string;
-
-            /**
-             * The height of this GIF in pixels.
-             */
-            height: string;
-        }
+        /**
+         * Data on the original version of this GIF. Good for desktop use.
+         */
+        'original': IGiphyImgData
     }
 }
 

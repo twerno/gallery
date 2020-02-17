@@ -25,7 +25,7 @@ export const HomePage = (props: IHomePageProps) => {
                 }}
             >
                 {
-                    ({ isSubmitting, handleSubmit, handleReset }) => (
+                    ({ isSubmitting }) => (
                         <HomeSearchForm>
                             <Field name="q" as={Input} aria-label="Search" />
                             <Button type="submit" disabled={isSubmitting}>Search</Button>

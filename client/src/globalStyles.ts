@@ -26,7 +26,7 @@ export const GlobalStyle = createGlobalStyle`
     }
 
     h1 {
-        font-size: 5rem;
+        font-size: 4rem;
         margin-bottom: 1rem;
         font-family: sans-serif;
     }
@@ -43,8 +43,12 @@ export const GlobalStyle = createGlobalStyle`
     @media only screen and (max-width: ${breakpoints.sm}) {
 
         html {
-            font-size: 12px;
+            font-size: 10px;
         }
+    }
+
+    .noScroll {
+        overflow: hidden;
     }
 
 `;

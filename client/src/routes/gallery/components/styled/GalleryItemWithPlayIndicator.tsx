@@ -1,13 +1,14 @@
 import styled, { css } from 'styled-components';
 
-import GalleryItem from './GalleryItem';
+import { IGalleryItemProps, GalleryItem } from './GalleryItem';
 
-interface IGalleryItemWithPlayIndicatorProps {
+
+interface IGalleryItemWithPlayIndicatorProps extends IGalleryItemProps {
     indicator: 'play' | 'pause' | 'none';
 }
 
 export const GalleryItemWithPlayIndicator = styled(GalleryItem) <IGalleryItemWithPlayIndicatorProps>`
-    
+
     ${props => props.indicator === 'play'
         ? playIndicator
         : props.indicator === 'pause'
@@ -16,7 +17,7 @@ export const GalleryItemWithPlayIndicator = styled(GalleryItem) <IGalleryItemWit
     }
 `;
 
-const playIndicator = css`
+const playIndicator = css<IGalleryItemProps>`
     position: relative;
 
     &::before,
@@ -39,7 +40,7 @@ const playIndicator = css`
 
     &::after {
         border-color: transparent;
-        border-left-color: rgba(255, 255, 255, .9);
+        border-left-color: rgba(255, 255, 255, ${props => props.disable ? '.1' : '.9'});
         border-style: solid;
         border-width: 1rem 0 1rem 2rem;
         margin-left: 0.2rem;
@@ -93,3 +94,6 @@ const pauseIndicator = css`
         border-left-color: rgba(0, 0, 0, .9);
     }
 `;
+
+export const PlayButton = styled.div`${playIndicator}`;
+export const PauseButton = styled.div`${pauseIndicator}`;

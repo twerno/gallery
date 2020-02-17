@@ -10,7 +10,7 @@ export interface IImageQueryParams {
 }
 
 export interface IImageQueryRespBody {
-    providers: Array<ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel>;
+    providers: (ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[];
 }
 
 export interface ILocalPixabayGetImageReturnModel extends IPixabayGetImageReturnModel {

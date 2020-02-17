@@ -1,6 +1,7 @@
+import { Form } from 'formik';
 import styled from 'styled-components';
 
-export default styled.form`
+export default styled(Form)`
     width: 100%;
     display: flex;
     flex-direction: row;

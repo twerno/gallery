@@ -19,23 +19,24 @@ export const GalleryHeader = (props: IGalleryHeaderProps) => {
 
             <Formik
                 initialValues={{ q: props.query.q }}
-                onSubmit={async (values) => props.onSearchSubmitted({ q: values.q })}
+                onSubmit={
+                    async (values, { setSubmitting }) => {
+                        props.onSearchSubmitted({ q: values.q });
+                    }
+                }
             >
                 {
-                    ({ isSubmitting, handleSubmit }) => (
-                        <HeaderSearchForm onSubmit={handleSubmit}>
-
+                    ({ isSubmitting }) => (
+                        <HeaderSearchForm>
                             <Field name="q" as={Input} aria-label="Search" />
-
                             <Button type="submit" disabled={isSubmitting} disableLeftBorder={true}>
                                 Search
                             </Button>
-
                         </HeaderSearchForm>
                     )
                 }
             </Formik>
 
-        </Headroom>
+        </Headroom >
     );
 }
