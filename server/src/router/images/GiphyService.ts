@@ -18,7 +18,7 @@ export class GiphyService {
         const params = {
             api_key: this.properties.GIPHY_API,
             q: queryParams.q,
-            offset: queryParams.giphy_offset,
+            offset: queryParams.giphy_offset + 1,
             limit: queryParams.perPageLimit
         };
 

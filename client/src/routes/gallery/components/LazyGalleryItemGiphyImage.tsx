@@ -2,22 +2,22 @@ import { IGiphyImage } from '@shared/';
 import AnimatedLoader from 'components/AnimatedLoader';
 import * as React from 'react';
 
-import { IPreviewImage } from './FullScreenPreview';
+import { IGallerySetPreviewAction } from '../redux/GalleryActions';
 import { IResponsiveImgProps, LazyResponsiveGalleryImage } from './helper/LazyResponsiveGalleryImage';
 import { GalleryItem as GalleryItem } from './styled/GalleryItem';
 import GalleryItemPlaceholder from './styled/GalleryItemPlaceholder';
 
 interface ILazyGalleryItemGiphyImageProps {
+    imageIdx: number;
     disable?: boolean;
     image: IGiphyImage;
-    setPreview: React.Dispatch<React.SetStateAction<IPreviewImage>>;
+    setPreview: React.Dispatch<IGallerySetPreviewAction>;
 }
 
 export const LazyGalleryItemGiphyImage = (props: ILazyGalleryItemGiphyImageProps) => {
 
     const fixed_still = props.image.images.fixed_height_still;
     const small_still = props.image.images.fixed_height_small_still;
-    const original = props.image.images.original;
 
     const imageProps: IResponsiveImgProps = {
         alt: props.image.title,
@@ -27,7 +27,8 @@ export const LazyGalleryItemGiphyImage = (props: ILazyGalleryItemGiphyImageProps
         ]
     };
 
-    const clickHandler = () => props.setPreview({ imgProvider: 'giphy', img: props.image });
+    const clickHandler =
+        () => props.setPreview({ type: 'GallerySetPreview', data: { previewIdx: props.imageIdx } });
 
     return (
         <LazyResponsiveGalleryImage

@@ -1,17 +1,14 @@
-import {
-    IImageQueryParams,
-    IImageQueryRespBody,
-    ILocalGiphyGetImageReturnModel,
-    ILocalPixabayGetImageReturnModel,
-    INumberMap,
-} from '@shared/';
-import axios from 'axios';
+import { IImageQueryParams, ILocalGiphyGetImageReturnModel, ILocalPixabayGetImageReturnModel } from '@shared/';
 import * as React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { IGalleryUrlQuery } from 'routes/Path';
-import { useIsMounted, useRefresh } from 'utils/ComponentHelper';
-import RouteUtils from 'utils/RouteUtils';
+import { RootState } from 'store/Store';
+import { useIsMounted } from 'utils/ComponentHelper';
 
-import { GiphyPaginator, PixabyPaginator } from '../helpers/Paginators';
+import { PaginatorHelper } from '../helpers/Paginators';
+import { GalleryActions } from '../redux/GalleryActions';
+import { IGalleryState, IGalleryStateMeta, IPreviewGiphyImg, IPreviewPixabyImg } from '../redux/GalleryState';
+import { apiImagesQueryGet } from './ApiImagesQueryGet';
 
 export interface IUseLoadPagesProps {
     perPageLimit: number;
@@ -19,173 +16,154 @@ export interface IUseLoadPagesProps {
 }
 
 export interface IUseLoadPagesResult {
-    pageIdx: number;
-    pages: Array<ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel>[];
+    images: (IPreviewGiphyImg | IPreviewPixabyImg)[];
+    pageIdx?: number;
     hasMorePages: boolean;
     loadNextPageHandler: () => void;
     isLoading: boolean;
-    errors: string[];
-    /**
-     * 
-     */
-    triggerRealoadManually: () => void;
+    errors: string[] | undefined;
+    triggerRefreshManually: () => void;
 }
 
 interface ILoadImagesControllerMutableState {
-    pixabyPaginator: PixabyPaginator;
-    giphyPaginator: GiphyPaginator;
-    loadedPages: INumberMap<boolean>;
-    query: IGalleryUrlQuery;
+    query?: IGalleryUrlQuery;
     loadingsNo: number;
-    pageIdx: number;
 }
 
 export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPagesResult => {
-    const [errors, setErrors] = React.useState<string[]>([]);
-    const [pages, setPages] = React.useState<Array<ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel>[]>([]);
-    const doRefresh = useRefresh();
     const { isMounted } = useIsMounted();
 
-    const mutableState = React.useRef<ILoadImagesControllerMutableState>(initState(props));
+    const { loadingMeta, errors, images } = useSelector<RootState, IGalleryState>(rootState => rootState.gallery);
+    const dispatch = useDispatch<React.Dispatch<GalleryActions>>();
 
-    // reset state after query change
+    const isValid = () => isMounted() && loadingMeta?.query?.q === mutableState.current.query?.q;
+
+    const mutableState = React.useRef<ILoadImagesControllerMutableState>({
+        query: { q: undefined }, loadingsNo: 0
+    });
+
+    // reset state when query changes
     React.useEffect(() => {
-        resetState(mutableState, setPages, setErrors);
-        mutableState.current.query.q = props.query.q;
+        dispatch({ type: 'GalleryQueryChangeAction', data: { query: props.query } });
+        mutableState.current.query = props.query;
+        mutableState.current.loadingsNo = 0;
     }, [props.query.q]);
 
-    const triggerRealoadManually = () => {
-        asyncLoadNextPage(props, mutableState, setPages, doRefresh, setErrors, isMounted);
-    }
-
-    // load data from the server
+    // load data from the server on state change
     React.useEffect(() => {
-        triggerRealoadManually();
-    }, [props.query.q, mutableState.current.pageIdx]);
+        if (loadingMeta.query?.q === undefined) { return };
+        asyncLoadMore(props, loadingMeta, mutableState, isValid, dispatch);
+    }, [loadingMeta.query?.q, loadingMeta.pageIdx]);
 
-    const hasMorePages = mutableState.current.pixabyPaginator.hasMorePages(mutableState.current.pageIdx)
-        || mutableState.current.giphyPaginator.hasMorePages(mutableState.current.pageIdx);
+    const hasMorePages = loadingMeta?.limit === undefined ||
+        Math.max(loadingMeta.limit.giphyPages, loadingMeta.limit.pixabayPages) > (loadingMeta?.pageIdx || 0);
 
     const isLoading: boolean = mutableState.current.loadingsNo > 0;
 
     const loadNextPageHandler = () => {
-        mutableState.current.pageIdx++;
-        doRefresh();
+        dispatch({ type: 'GallertLoadMoreAction' });
     };
 
+    // 
+    const triggerRefreshManually = () => {
+        if (!isValid() || loadingMeta.query?.q === undefined) { return };
+        asyncLoadMore(props, loadingMeta, mutableState, isValid, dispatch);
+    }
+
     return {
+        images,
         hasMorePages,
-        pageIdx: mutableState.current.pageIdx,
-        pages,
+        pageIdx: loadingMeta?.pageIdx,
         loadNextPageHandler,
         isLoading,
         errors,
-        triggerRealoadManually
+        triggerRefreshManually,
     };
 };
 
-function initPaginators(data: IImageQueryRespBody, pixabyPaginator: PixabyPaginator, giphyPaginator: GiphyPaginator) {
-    data.providers.map(provider => {
-        provider.imgProvider === 'pixabay'
-            ? pixabyPaginator.computeTotalPages(provider)
-            : provider.imgProvider === 'giphy'
-                ? giphyPaginator.computeTotalPages(provider)
-                : null;
-    });
-}
-
-function initState(props: IUseLoadPagesProps): ILoadImagesControllerMutableState {
-    return {
-        giphyPaginator: new GiphyPaginator(props.perPageLimit),
-        pixabyPaginator: new PixabyPaginator(props.perPageLimit),
-        query: { ...props.query },
-        loadedPages: {},
-        loadingsNo: 0,
-        pageIdx: 0
+function computeLimit(providers: (ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[], imagesPerPage: number) {
+    const limit = {
+        pixabayPages: 0,
+        giphyPages: 0,
     };
+
+    providers.map(provider => {
+        if (provider.imgProvider === 'pixabay') {
+            limit.pixabayPages = PaginatorHelper.computeTotalPixabayPages(provider, imagesPerPage);
+        }
+        else if (provider.imgProvider === 'giphy') {
+            limit.giphyPages = PaginatorHelper.computeTotalGiphyPages(provider, imagesPerPage);
+        }
+    });
+
+    return limit;
 }
 
-function getApiImagesQueryUrl(props: IUseLoadPagesProps, state: ILoadImagesControllerMutableState): string {
-    const pageIdx: number = state.pageIdx;
+function getApiImagesQueryParams(props: IUseLoadPagesProps, loadingMeta: IGalleryStateMeta): IImageQueryParams {
+    const pageIdx: number = loadingMeta.pageIdx;
 
-    const queryParams: IImageQueryParams = {
-        q: props.query.q,
-        pixabay_offset: state.pixabyPaginator.hasMorePages(pageIdx) ? pageIdx + '' : undefined,
-        giphy_offset: state.giphyPaginator.hasMorePages(pageIdx) ? pageIdx + '' : undefined,
+    const pageOffset = (maxPagesNo: number | undefined) => maxPagesNo == undefined
+        ? 0
+        : maxPagesNo > pageIdx
+            ? pageIdx
+            : undefined;
+
+
+    return {
+        q: loadingMeta?.query?.q,
+        pixabay_offset: pageOffset(loadingMeta.limit?.pixabayPages) + '',
+        giphy_offset: pageOffset(loadingMeta.limit?.giphyPages) + '',
         perPageLimit: props.perPageLimit + '',
         services: 'both'
     };
-
-    return `/api/images/query${RouteUtils.makeQueryFromMap(queryParams)}`;
 }
 
-function resetState(
-    mutableState: React.MutableRefObject<ILoadImagesControllerMutableState>,
-    setPages: React.Dispatch<React.SetStateAction<(ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[][]>>,
-    setErrors: React.Dispatch<React.SetStateAction<string[]>>,
-): void {
-    setPages([]);
-    setErrors([]);
-
-    const currentState = mutableState.current;
-    currentState.giphyPaginator.clear();
-    currentState.pixabyPaginator.clear();
-    currentState.loadedPages = {};
-    currentState.loadingsNo = 0;
-    currentState.pageIdx = 0;
-
-    // clearing query will break promise resolution
-    // currentState.query.q = undefined;
-}
-
-function asyncLoadNextPage(
+function asyncLoadMore(
     props: IUseLoadPagesProps,
+    loadingMeta: IGalleryStateMeta,
     mutableState: React.MutableRefObject<ILoadImagesControllerMutableState>,
-    setPages: React.Dispatch<React.SetStateAction<(ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[][]>>,
-    doRefresh: () => void,
-    setErrors: React.Dispatch<React.SetStateAction<string[]>>,
-    isMounted: () => boolean
+    isValid: () => boolean,
+    dispatch: React.Dispatch<GalleryActions>,
 ) {
-    // the page is already loaded -- return
-    if (mutableState.current.loadedPages[mutableState.current.pageIdx] === true) { return; }
-    mutableState.current.loadedPages[mutableState.current.pageIdx] = true;
-
-    setErrors([]);
-
-    const url = getApiImagesQueryUrl(props, mutableState.current);
+    const queryParams = getApiImagesQueryParams(props, loadingMeta);
 
     mutableState.current.loadingsNo++;
-    axios.get<IImageQueryRespBody>(url)
+    apiImagesQueryGet(queryParams)
         .then(val => {
             // promise is not longer valid -- return
-            if (!isMounted() || props.query.q !== mutableState.current.query.q) { return; }
+            if (!isValid()) { return; }
 
-            setPages((prevState) => [...prevState, val.data.providers]);
-            initPaginators(
-                val.data,
-                mutableState.current.pixabyPaginator,
-                mutableState.current.giphyPaginator
-            );
+            const images = mapImages(val.data.providers);
+            const limit = computeLimit(val.data.providers, props.perPageLimit);
+
+            mutableState.current.loadingsNo--;
+            dispatch({ type: 'GalleryImagesLoadedAction', data: { images, limit } });
         })
         .catch(err => {
             // promise is not longer valid -- return
-            if (!isMounted() || props.query.q !== mutableState.current.query.q) { return; }
+            if (!isValid()) { return; }
 
-            resetState(mutableState, setPages, setErrors);
+            let errors: string[];
             if (typeof err.message === 'string') {
-                setErrors([err.message]);
+                errors = [err.message];
             }
             else {
-                setErrors([err.toString()]);
+                errors = [err.toString()];
             }
-        })
-        .finally(() => {
-            // promise is not longer valid -- return
-            if (!isMounted() || props.query.q !== mutableState.current.query.q) { return; }
 
-            mutableState.current.loadingsNo--;
-
-            // force refresh manually; changing loadingsNo does not trigger refresh
-            doRefresh();
+            mutableState.current.loadingsNo = 0;
+            dispatch({ type: 'GalleryLoadingErrors', data: { errors } });
         });
+}
+
+function mapImages(providers: (ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[]) {
+    return providers
+        .map<(IPreviewPixabyImg | IPreviewGiphyImg)[]>(provider =>
+            provider.imgProvider === 'pixabay'
+                ? provider.hits.map(img => ({ imgProvider: provider.imgProvider, ...img }))
+                : provider.imgProvider === 'giphy'
+                    ? provider.data.map(img => ({ imgProvider: provider.imgProvider, ...img }))
+                    : []
+        )
+        .reduce((prev, curr) => [...prev, ...curr], []);
 }

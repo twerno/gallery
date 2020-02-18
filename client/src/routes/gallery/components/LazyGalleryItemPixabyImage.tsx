@@ -2,16 +2,17 @@ import { IPixabayImage } from '@shared/';
 import AnimatedLoader from 'components/AnimatedLoader';
 import * as React from 'react';
 
-import { IPreviewImage } from './FullScreenPreview';
+import { IGallerySetPreviewAction } from '../redux/GalleryActions';
 import { IResponsiveImgProps, LazyResponsiveGalleryImage } from './helper/LazyResponsiveGalleryImage';
 import { GalleryItem } from './styled/GalleryItem';
 import GalleryItemPlaceholder from './styled/GalleryItemPlaceholder';
 
 
 interface ILazyGalleryItemPixabyImageProps {
+    imageIdx: number;
     disable?: boolean;
     image: IPixabayImage;
-    setPreview: React.Dispatch<React.SetStateAction<IPreviewImage>>;
+    setPreview: React.Dispatch<IGallerySetPreviewAction>;
 }
 
 export const LazyGalleryItemPixabyImage = (props: ILazyGalleryItemPixabyImageProps) => {
@@ -31,7 +32,8 @@ export const LazyGalleryItemPixabyImage = (props: ILazyGalleryItemPixabyImagePro
         ]
     };
 
-    const clickHandler = () => props.setPreview({ imgProvider: 'pixabay', img: props.image });
+    const clickHandler =
+        () => props.setPreview({ type: 'GallerySetPreview', data: { previewIdx: props.imageIdx } });
 
     return (
         <LazyResponsiveGalleryImage

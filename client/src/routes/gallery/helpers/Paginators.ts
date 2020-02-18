@@ -36,3 +36,15 @@ export class GiphyPaginator extends AbstractImageProviderPaginator<ILocalGiphyGe
         this.totalPages = Math.floor(total / this.perPageLimit) + (total % this.perPageLimit > 0 ? 1 : 0);
     }
 }
+
+export const PaginatorHelper = {
+    computeTotalPixabayPages: (model: ILocalPixabayGetImageReturnModel, imagesPerPage: number) => {
+        const total = +model.total;
+        return Math.floor(total / imagesPerPage) + (total % imagesPerPage > 0 ? 1 : 0);
+    },
+
+    computeTotalGiphyPages: (model: ILocalGiphyGetImageReturnModel, imagesPerPage: number) => {
+        const total = +model.pagination.total_count || +model.pagination.count
+        return Math.floor(total / imagesPerPage) + (total % imagesPerPage > 0 ? 1 : 0);
+    },
+}

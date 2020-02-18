@@ -1,9 +1,10 @@
-import { ILocalGiphyGetImageReturnModel, ILocalPixabayGetImageReturnModel } from '@shared/';
 import * as React from 'react';
+import { useDispatch } from 'react-redux';
 import { IGalleryUrlQuery } from 'routes/Path';
 import styled from 'styled-components';
 
-import { IPreviewImage } from './FullScreenPreview';
+import { IGallerySetPreviewAction } from '../redux/GalleryActions';
+import { IPreviewGiphyImg, IPreviewPixabyImg } from '../redux/GalleryState';
 import { LazyGalleryItemGiphyImage } from './LazyGalleryItemGiphyImage';
 import { LazyGalleryItemLoadMoreTrigger } from './LazyGalleryItemLoadMoreTrigger';
 import { LazyGalleryItemPixabyImage } from './LazyGalleryItemPixabyImage';
@@ -12,41 +13,31 @@ export interface IGalleryProps {
     disable: boolean;
     canLoadMore: boolean;
     loadMoreCallback: () => void;
-    pages: Array<ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel>[] | undefined;
+    images: (IPreviewGiphyImg | IPreviewPixabyImg)[];
     className?: string;
     query: IGalleryUrlQuery;
-    setPreview: React.Dispatch<React.SetStateAction<IPreviewImage>>;
 }
 
 const _GalleryContainer: React.FC<IGalleryProps> = (props: IGalleryProps) => {
 
-    const galleryItems = props.pages?.map(page =>
-        (page || []).map((images, pageIdx) => {
-            switch (images.imgProvider) {
-                case 'giphy':
-                    return images.data.map(img => (
-                        <LazyGalleryItemGiphyImage
-                            image={img}
-                            key={img.id}
-                            disable={props.disable}
-                            setPreview={props.setPreview}
-                        />)
-                    );
+    const dispatch = useDispatch<React.Dispatch<IGallerySetPreviewAction>>();
 
-                case 'pixabay':
-                    return images.hits.map(img => (
-                        <LazyGalleryItemPixabyImage
-                            image={img}
-                            key={img.id}
-                            disable={props.disable}
-                            setPreview={props.setPreview}
-                        />
-                    ));
-
-                default:
-                    return <div key={pageIdx}>{`Unknown provider: "${(images as any).imgProvider}"`}</div>;
-            }
-        })
+    const galleryItems = props.images?.map((img, idx) =>
+        img.imgProvider === 'giphy'
+            ? <LazyGalleryItemGiphyImage
+                image={img}
+                key={`giphy_${img.id}`}
+                disable={props.disable}
+                imageIdx={idx}
+                setPreview={dispatch}
+            />
+            : <LazyGalleryItemPixabyImage
+                image={img}
+                key={`pixabay_${img.id}`}
+                disable={props.disable}
+                imageIdx={idx}
+                setPreview={dispatch}
+            />
     );
 
     return (
@@ -55,6 +46,7 @@ const _GalleryContainer: React.FC<IGalleryProps> = (props: IGalleryProps) => {
             {props.canLoadMore &&
                 <LazyGalleryItemLoadMoreTrigger
                     loadMoreCallback={props.loadMoreCallback}
+                    key={`loadMore_${props.images.length}_${props.query.q}`}
                 />
             }
         </div>

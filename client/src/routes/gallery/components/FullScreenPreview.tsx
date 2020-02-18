@@ -1,32 +1,23 @@
-import { IGiphyImage, IPixabayImage } from '@shared/';
 import AnimatedLoader from 'components/AnimatedLoader';
 import FullScreenContainer from 'components/FullScreenContainer';
 import CloseButton from 'components/styled/CloseButton';
 import * as React from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
+import { IGallerySetPreviewAction } from '../redux/GalleryActions';
+import { IPreviewGiphyImg, IPreviewPixabyImg } from '../redux/GalleryState';
 import { FullScreenPreviewGiphyImage } from './FullScreenPreviewGiphyImage';
 import { FullScreenPreviewPixabyImage } from './FullScreenPreviewPixabyImage';
 
-export interface IPreviewGiphyImg {
-    imgProvider: 'giphy';
-    img: IGiphyImage;
-}
-
-export interface IPreviewPixabyImg {
-    imgProvider: 'pixabay';
-    img: IPixabayImage;
-}
-
-export type IPreviewImage = IPreviewGiphyImg | IPreviewPixabyImg | undefined;
-
 export interface IFullScreenPreview {
     className?: string;
-    preview: IPreviewImage;
-    setPreview: React.Dispatch<React.SetStateAction<IPreviewImage>>;
+    previewImg?: IPreviewGiphyImg | IPreviewPixabyImg;
 }
 
-const _FullScreenPreview: React.FC<IFullScreenPreview> = ({ preview, setPreview, className }) => {
+const _FullScreenPreview: React.FC<IFullScreenPreview> = ({ previewImg, className }) => {
+
+    const dispatch = useDispatch<React.Dispatch<IGallerySetPreviewAction>>();
 
     React.useEffect(() => {
         const body = document.querySelector('body');
@@ -37,13 +28,13 @@ const _FullScreenPreview: React.FC<IFullScreenPreview> = ({ preview, setPreview,
     return (
         <div className={className}>
             <ButtonRow>
-                <CloseButton onClick={() => setPreview(undefined)} />
+                <CloseButton onClick={() => dispatch({ type: 'GallerySetPreview', data: {} })} />
             </ButtonRow>
-            {preview?.imgProvider === 'giphy'
-                && <FullScreenPreviewGiphyImage image={preview.img} />
+            {previewImg?.imgProvider === 'giphy'
+                && <FullScreenPreviewGiphyImage image={previewImg} />
             }
-            {preview?.imgProvider === 'pixabay'
-                && <FullScreenPreviewPixabyImage image={preview.img} />
+            {previewImg?.imgProvider === 'pixabay'
+                && <FullScreenPreviewPixabyImage image={previewImg} />
             }
         </div>
     );

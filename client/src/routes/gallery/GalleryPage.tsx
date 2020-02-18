@@ -1,13 +1,16 @@
 import FullScreenContainer from 'components/FullScreenContainer';
 import Alert from 'components/styled/Alert';
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import { RouteComponentProps, useHistory } from 'react-router';
 import { IGalleryUrlQuery, Path } from 'routes/Path';
+import { RootState } from 'store/Store';
 
-import { FullScreenPreview, IPreviewImage } from './components/FullScreenPreview';
+import { FullScreenPreview } from './components/FullScreenPreview';
 import { GalleryContainer } from './components/GalleryContainer';
 import { GalleryHeader } from './components/GalleryHeader';
 import { useLoadImagesController } from './controllers/useLoadImagesController';
+import { IGalleryState } from './redux/GalleryState';
 
 export interface IGalleryPage {
     routeProps: RouteComponentProps<{ query?: string }>;
@@ -18,20 +21,18 @@ const perPageLimit = 10;
 export const GalleryPage = (props: IGalleryPage) => {
     const searchParams = new URLSearchParams(props.routeProps.location.search);
     const query: IGalleryUrlQuery = { q: searchParams.get('q') || undefined };
+    const history = useHistory();
+    const { previewIdx } = useSelector<RootState, IGalleryState>(rootState => rootState.gallery);
 
-    const { pages, hasMorePages, loadNextPageHandler, isLoading, errors, triggerRealoadManually } = useLoadImagesController(
+    const { images, loadNextPageHandler, isLoading, hasMorePages, errors, triggerRefreshManually } = useLoadImagesController(
         { perPageLimit, query }
     );
 
-    const [preview, setPreview] = React.useState<IPreviewImage>(undefined);
-
-    const hasErrors = errors.length > 0;
-
-    const history = useHistory();
+    const hasErrors = errors && errors.length > 0;
 
     const searchSubmittedHandler = (submittedQuery: IGalleryUrlQuery) => {
         if (submittedQuery.q === query.q && hasErrors) {
-            triggerRealoadManually();
+            triggerRefreshManually();
         }
         history.push(Path.galleryUrl(submittedQuery));
     }
@@ -40,26 +41,25 @@ export const GalleryPage = (props: IGalleryPage) => {
         <>
             <GalleryHeader query={query} onSearchSubmitted={searchSubmittedHandler} />
             {hasErrors && <Errors errors={errors} />}
-            {!hasErrors && pages.length > 0 &&
+            {!hasErrors && images.length > 0 &&
                 <GalleryContainer
-                    pages={pages}
+                    images={images}
                     loadMoreCallback={loadNextPageHandler}
                     canLoadMore={!isLoading && hasMorePages}
                     query={query}
-                    disable={!!preview}
-                    setPreview={setPreview}
+                    disable={previewIdx !== undefined}
                 />
             }
-            {preview &&
-                <FullScreenPreview preview={preview} setPreview={setPreview} />
+            {previewIdx !== undefined &&
+                <FullScreenPreview previewImg={images[previewIdx]} />
             }
         </>
     );
 };
 
 
-const Errors: React.FC<{ errors: string[] }> = ({ errors }) => (
+const Errors: React.FC<{ errors?: string[] }> = ({ errors }) => (
     <FullScreenContainer position='relative'>
-        <Alert>{errors}</Alert>
+        <Alert>{errors || 'Unknown error'}</Alert>
     </FullScreenContainer>
 );
