@@ -19,9 +19,18 @@ export interface IGalleryStateMeta {
 }
 
 export interface IGalleryState {
-    errors?: string[];
     images: (IPreviewGiphyImg | IPreviewPixabyImg)[];
     loadingMeta: IGalleryStateMeta;
 
+    errors?: string[];
+
     previewIdx?: number;
+}
+
+export interface IItemsLoadedActionPayload {
+    images: (IPreviewGiphyImg | IPreviewPixabyImg)[];
+    limit: {
+        pixabayPages: number;
+        giphyPages: number;
+    }
 }

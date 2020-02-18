@@ -5,8 +5,8 @@ import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-import { IGallerySetPreviewAction } from '../redux/GalleryActions';
-import { IPreviewGiphyImg, IPreviewPixabyImg } from '../redux/GalleryState';
+import { galleryItemSlice } from '../redux/GalleryItemSlice';
+import { IPreviewGiphyImg, IPreviewPixabyImg } from '../redux/GalleryItemState';
 import { FullScreenPreviewGiphyImage } from './FullScreenPreviewGiphyImage';
 import { FullScreenPreviewPixabyImage } from './FullScreenPreviewPixabyImage';
 
@@ -17,7 +17,7 @@ export interface IFullScreenPreview {
 
 const _FullScreenPreview: React.FC<IFullScreenPreview> = ({ previewImg, className }) => {
 
-    const dispatch = useDispatch<React.Dispatch<IGallerySetPreviewAction>>();
+    const dispatch = useDispatch();
 
     React.useEffect(() => {
         const body = document.querySelector('body');
@@ -28,7 +28,7 @@ const _FullScreenPreview: React.FC<IFullScreenPreview> = ({ previewImg, classNam
     return (
         <div className={className}>
             <ButtonRow>
-                <CloseButton onClick={() => dispatch({ type: 'GallerySetPreview', data: {} })} />
+                <CloseButton onClick={() => dispatch(galleryItemSlice.actions.setPreview(undefined))} />
             </ButtonRow>
             {previewImg?.imgProvider === 'giphy'
                 && <FullScreenPreviewGiphyImage image={previewImg} />

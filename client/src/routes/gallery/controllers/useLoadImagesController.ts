@@ -6,20 +6,19 @@ import { RootState } from 'store/Store';
 import { useIsMounted } from 'utils/ComponentHelper';
 
 import { PaginatorHelper } from '../helpers/Paginators';
-import { GalleryActions } from '../redux/GalleryActions';
-import { IGalleryState, IGalleryStateMeta, IPreviewGiphyImg, IPreviewPixabyImg } from '../redux/GalleryState';
+import { galleryItemSlice } from '../redux/GalleryItemSlice';
+import { IGalleryState, IGalleryStateMeta, IPreviewGiphyImg, IPreviewPixabyImg } from '../redux/GalleryItemState';
 import { apiImagesQueryGet } from './ApiImagesQueryGet';
 
 export interface IUseLoadPagesProps {
-    perPageLimit: number;
     query: IGalleryUrlQuery;
+    perPageLimit: number;
 }
 
 export interface IUseLoadPagesResult {
     images: (IPreviewGiphyImg | IPreviewPixabyImg)[];
     pageIdx?: number;
     hasMorePages: boolean;
-    loadNextPageHandler: () => void;
     isLoading: boolean;
     errors: string[] | undefined;
     triggerRefreshManually: () => void;
@@ -33,8 +32,8 @@ interface ILoadImagesControllerMutableState {
 export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPagesResult => {
     const { isMounted } = useIsMounted();
 
-    const { loadingMeta, errors, images } = useSelector<RootState, IGalleryState>(rootState => rootState.gallery);
-    const dispatch = useDispatch<React.Dispatch<GalleryActions>>();
+    const { loadingMeta, errors, images } = useSelector<RootState, IGalleryState>(rootState => rootState.galleryItems);
+    const dispatch = useDispatch();
 
     const isValid = () => isMounted() && loadingMeta?.query?.q === mutableState.current.query?.q;
 
@@ -44,7 +43,7 @@ export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPage
 
     // reset state when query changes
     React.useEffect(() => {
-        dispatch({ type: 'GalleryQueryChangeAction', data: { query: props.query } });
+        dispatch(galleryItemSlice.actions.newQuery(props.query));
         mutableState.current.query = props.query;
         mutableState.current.loadingsNo = 0;
     }, [props.query.q]);
@@ -60,10 +59,6 @@ export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPage
 
     const isLoading: boolean = mutableState.current.loadingsNo > 0;
 
-    const loadNextPageHandler = () => {
-        dispatch({ type: 'GallertLoadMoreAction' });
-    };
-
     // 
     const triggerRefreshManually = () => {
         if (!isValid() || loadingMeta.query?.q === undefined) { return };
@@ -74,7 +69,6 @@ export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPage
         images,
         hasMorePages,
         pageIdx: loadingMeta?.pageIdx,
-        loadNextPageHandler,
         isLoading,
         errors,
         triggerRefreshManually,
@@ -123,7 +117,7 @@ function asyncLoadMore(
     loadingMeta: IGalleryStateMeta,
     mutableState: React.MutableRefObject<ILoadImagesControllerMutableState>,
     isValid: () => boolean,
-    dispatch: React.Dispatch<GalleryActions>,
+    dispatch: React.Dispatch<any>,
 ) {
     const queryParams = getApiImagesQueryParams(props, loadingMeta);
 
@@ -137,7 +131,7 @@ function asyncLoadMore(
             const limit = computeLimit(val.data.providers, props.perPageLimit);
 
             mutableState.current.loadingsNo--;
-            dispatch({ type: 'GalleryImagesLoadedAction', data: { images, limit } });
+            dispatch(galleryItemSlice.actions.itemsLoaded({ images, limit }));
         })
         .catch(err => {
             // promise is not longer valid -- return
@@ -152,7 +146,7 @@ function asyncLoadMore(
             }
 
             mutableState.current.loadingsNo = 0;
-            dispatch({ type: 'GalleryLoadingErrors', data: { errors } });
+            dispatch(galleryItemSlice.actions.loadingErrors(errors));
         });
 }
 

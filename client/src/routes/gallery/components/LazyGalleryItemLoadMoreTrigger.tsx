@@ -1,15 +1,19 @@
+import AnimatedLoader from 'components/AnimatedLoader';
 import { LazyLoader } from 'components/LazyLoader';
 import * as React from 'react';
+import { useDispatch } from 'react-redux';
+
+import { galleryItemSlice } from '../redux/GalleryItemSlice';
 import { GalleryItem } from './styled/GalleryItem';
 import GalleryItemPlaceholder from './styled/GalleryItemPlaceholder';
-import AnimatedLoader from 'components/AnimatedLoader';
 
 export interface ILazyGalleryItemLoadMoreTriggerProps {
-    loadMoreCallback: () => void;
+
 }
 
 export const LazyGalleryItemLoadMoreTrigger = (props: ILazyGalleryItemLoadMoreTriggerProps) => {
 
+    const dispatch = useDispatch();
     const [used, setUsed] = React.useState(false);
 
     return (
@@ -21,7 +25,7 @@ export const LazyGalleryItemLoadMoreTrigger = (props: ILazyGalleryItemLoadMoreTr
             {({ }) => {
                 if (!used) {
                     setUsed(true);
-                    props.loadMoreCallback();
+                    dispatch(galleryItemSlice.actions.loadNextPage());
                 }
                 return null;
             }}

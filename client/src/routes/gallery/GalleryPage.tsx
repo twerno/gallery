@@ -10,7 +10,6 @@ import { FullScreenPreview } from './components/FullScreenPreview';
 import { GalleryContainer } from './components/GalleryContainer';
 import { GalleryHeader } from './components/GalleryHeader';
 import { useLoadImagesController } from './controllers/useLoadImagesController';
-import { IGalleryState } from './redux/GalleryState';
 
 export interface IGalleryPage {
     routeProps: RouteComponentProps<{ query?: string }>;
@@ -22,9 +21,9 @@ export const GalleryPage = (props: IGalleryPage) => {
     const searchParams = new URLSearchParams(props.routeProps.location.search);
     const query: IGalleryUrlQuery = { q: searchParams.get('q') || undefined };
     const history = useHistory();
-    const { previewIdx } = useSelector<RootState, IGalleryState>(rootState => rootState.gallery);
+    const previewIdx = useSelector<RootState, number | undefined>(rootState => rootState.galleryItems.previewIdx);
 
-    const { images, loadNextPageHandler, isLoading, hasMorePages, errors, triggerRefreshManually } = useLoadImagesController(
+    const { images, isLoading, hasMorePages, errors, triggerRefreshManually } = useLoadImagesController(
         { perPageLimit, query }
     );
 
@@ -44,7 +43,6 @@ export const GalleryPage = (props: IGalleryPage) => {
             {!hasErrors && images.length > 0 &&
                 <GalleryContainer
                     images={images}
-                    loadMoreCallback={loadNextPageHandler}
                     canLoadMore={!isLoading && hasMorePages}
                     query={query}
                     disable={previewIdx !== undefined}

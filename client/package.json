@@ -12,6 +12,7 @@
   "author": "Tomasz Werno",
   "license": "ISC",
   "dependencies": {
+    "@reduxjs/toolkit": "^1.2.5",
     "axios": "^0.19.2",
     "formik": "^2.1.4",
     "path-to-regexp": "^6.1.0",
