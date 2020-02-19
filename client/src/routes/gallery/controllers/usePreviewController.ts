@@ -27,7 +27,7 @@ export const usePreviewController = (props: IUsePreviewControllerProps): IUsePre
     }
 
     const previewNextHandler = () => {
-        if (images.length > (previewIdx || 0) + props.perPageLimit && hasMorePages) {
+        if (images.length < (previewIdx || 0) + props.perPageLimit && hasMorePages) {
             dispatch(galleryItemSlice.actions.loadNextPage());
         }
         dispatch(galleryItemSlice.actions.previewMove('next'));
