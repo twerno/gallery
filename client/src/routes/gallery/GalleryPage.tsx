@@ -1,15 +1,14 @@
 import FullScreenContainer from 'components/FullScreenContainer';
 import Alert from 'components/styled/Alert';
 import * as React from 'react';
-import { useSelector } from 'react-redux';
 import { RouteComponentProps, useHistory } from 'react-router';
 import { IGalleryUrlQuery, Path } from 'routes/Path';
-import { RootState } from 'store/Store';
 
 import { FullScreenPreview } from './components/FullScreenPreview';
 import { GalleryContainer } from './components/GalleryContainer';
 import { GalleryHeader } from './components/GalleryHeader';
 import { useLoadImagesController } from './controllers/useLoadImagesController';
+import { usePreviewController } from './controllers/usePreviewController';
 
 export interface IGalleryPage {
     routeProps: RouteComponentProps<{ query?: string }>;
@@ -21,11 +20,11 @@ export const GalleryPage = (props: IGalleryPage) => {
     const searchParams = new URLSearchParams(props.routeProps.location.search);
     const query: IGalleryUrlQuery = { q: searchParams.get('q') || undefined };
     const history = useHistory();
-    const previewIdx = useSelector<RootState, number | undefined>(rootState => rootState.galleryItems.previewIdx);
 
     const { images, isLoading, hasMorePages, errors, triggerRefreshManually } = useLoadImagesController(
         { perPageLimit, query }
     );
+    const { previewIdx, previewNextHandler, previewPrevHandler } = usePreviewController({ perPageLimit });
 
     const hasErrors = errors && errors.length > 0;
 
@@ -49,7 +48,11 @@ export const GalleryPage = (props: IGalleryPage) => {
                 />
             }
             {previewIdx !== undefined &&
-                <FullScreenPreview previewImg={images[previewIdx]} />
+                <FullScreenPreview
+                    previewImg={images[previewIdx]}
+                    previewNextHandler={previewNextHandler}
+                    previewPrevHandler={previewPrevHandler}
+                />
             }
         </>
     );

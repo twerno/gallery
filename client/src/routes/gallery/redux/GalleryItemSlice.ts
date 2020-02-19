@@ -62,7 +62,25 @@ export const galleryItemSlice = createSlice({
                 ...state,
                 previewIdx: action.payload
             };
-        }
+        },
+
+        previewMove(state, action: PayloadAction<'prev' | 'next'>): IGalleryState {
+
+            if (state.previewIdx === undefined) {
+                return state;
+            }
+
+            const nextPreviewIdx = action.payload === 'prev' && state.previewIdx > 0
+                ? state.previewIdx - 1
+                : action.payload === 'next' && state.previewIdx < state.images.length
+                    ? state.previewIdx + 1
+                    : state.previewIdx;
+
+            return {
+                ...state,
+                previewIdx: nextPreviewIdx
+            };
+        },
 
     }
 });
