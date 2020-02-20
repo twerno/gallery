@@ -16,7 +16,7 @@ export interface IGalleryPage {
 
 const perPageLimit = 10;
 
-const GalleryPage = (props: IGalleryPage) => {
+export const GalleryPage = (props: IGalleryPage) => {
     const searchParams = new URLSearchParams(props.routeProps.location.search);
     const query: IGalleryUrlQuery = { q: searchParams.get('q') || undefined };
     const history = useHistory();
@@ -57,8 +57,6 @@ const GalleryPage = (props: IGalleryPage) => {
         </>
     );
 };
-
-export default GalleryPage;
 
 
 const Errors: React.FC<{ errors?: string[] }> = ({ errors }) => (
