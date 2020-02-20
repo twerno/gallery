@@ -9,6 +9,8 @@ export interface IPreviewPixabyImg extends IPixabayImage {
     imgProvider: 'pixabay';
 }
 
+export type IPreviewImg = IPreviewGiphyImg | IPreviewPixabyImg;
+
 export interface IGalleryStateMeta {
     pageIdx: number;
     limit?: {

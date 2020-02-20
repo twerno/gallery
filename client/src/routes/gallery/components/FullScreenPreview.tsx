@@ -1,27 +1,28 @@
 import AnimatedLoader from 'components/AnimatedLoader';
 import FullScreenContainer from 'components/FullScreenContainer';
+import { SpringHorizontalTransition } from 'components/HorizontalTransition';
 import CloseButton from 'components/styled/CloseButton';
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { useSwipeable } from 'react-swipeable';
-import styled, { css, keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 import { galleryItemSlice } from '../redux/GalleryItemSlice';
-import { IPreviewGiphyImg, IPreviewPixabyImg } from '../redux/GalleryItemState';
+import { IPreviewImg } from '../redux/GalleryItemState';
 import { FullScreenPreviewGiphyImage } from './FullScreenPreviewGiphyImage';
 import { FullScreenPreviewPixabyImage } from './FullScreenPreviewPixabyImage';
 
 
 export interface IFullScreenPreview {
     className?: string;
-    previewImg?: IPreviewGiphyImg | IPreviewPixabyImg;
+    previewImg: IPreviewImg;
     previewNextHandler: () => void;
     previewPrevHandler: () => void;
 }
 
 const _FullScreenPreview: React.FC<IFullScreenPreview> = ({ previewImg, className, previewNextHandler, previewPrevHandler }) => {
-    const [direction, setDirection] = React.useState<'left' | 'right' | undefined>(undefined);
     const dispatch = useDispatch();
+    const [direction, setDirection] = React.useState<'next' | 'prev' | undefined>(undefined);
 
     React.useEffect(() => {
         const body = document.querySelector('body');
@@ -31,12 +32,12 @@ const _FullScreenPreview: React.FC<IFullScreenPreview> = ({ previewImg, classNam
 
     const handlers = useSwipeable({
         onSwipedLeft: () => {
+            setDirection('next');
             previewNextHandler();
-            setDirection('left');
         },
         onSwipedRight: () => {
+            setDirection('prev');
             previewPrevHandler();
-            setDirection('right');
         }
     });
 
@@ -45,14 +46,10 @@ const _FullScreenPreview: React.FC<IFullScreenPreview> = ({ previewImg, classNam
             <ButtonRow>
                 <CloseButton onClick={() => dispatch(galleryItemSlice.actions.setPreview(undefined))} />
             </ButtonRow>
-            <Transition key={previewImg?.id || ''} direction={direction}>
-                {previewImg?.imgProvider === 'giphy'
-                    && <FullScreenPreviewGiphyImage image={previewImg} />
-                }
-                {previewImg?.imgProvider === 'pixabay'
-                    && <FullScreenPreviewPixabyImage image={previewImg} />
-                }
-            </Transition>
+
+            <SpringHorizontalTransition item={previewImg} transitionDirection={direction}>
+                {item => <FullScreenPreviewImage previewImg={item} />}
+            </SpringHorizontalTransition>
         </div>
     );
 }
@@ -73,7 +70,7 @@ export const FullScreenPreviewLoadingPlaceholder = () => (
     </FullScreenContainer>
 );
 
-export const ButtonRow = styled.div`
+const ButtonRow = styled.div`
     position:absolute;
     width: 100%;
     height: 2rem;
@@ -82,35 +79,19 @@ export const ButtonRow = styled.div`
     z-index: 2;
 `;
 
-const slideRight = keyframes`
-    from {
-        transform: translateX(-200%)
-    }
+interface IFullScreenPreviewImageProps {
+    previewImg?: IPreviewImg;
+}
 
-    to {
-        transform: translateX(0)
-    }
-`;
+const FullScreenPreviewImage = (props: IFullScreenPreviewImageProps) => {
 
-const slideLeft = keyframes`
-    from {
-        transform: translateX(200%)
-    }
-
-    to {
-        transform: translateX()
-    }
-`;
-
-export const Transition = styled.div<{ direction?: 'left' | 'right' }>`
-    ${
-    props => props.direction === 'left'
-        ? css`animation: ${slideLeft} 0.5s linear 1;`
-        : props.direction === 'right'
-            ? css`animation: ${slideRight} 0.5s linear 1;`
-            : ''
-    }
-    position: relative;
-    height: 100%;
-    width: 100%;
-`;
+    return <>
+        {props.previewImg?.imgProvider === 'giphy'
+            && <FullScreenPreviewGiphyImage image={props.previewImg} />
+        }
+        {
+            props.previewImg?.imgProvider === 'pixabay'
+            && <FullScreenPreviewPixabyImage image={props.previewImg} />
+        }
+    </>
+}

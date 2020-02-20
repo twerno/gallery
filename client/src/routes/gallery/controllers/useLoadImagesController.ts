@@ -7,7 +7,7 @@ import { useIsMounted } from 'utils/ComponentHelper';
 
 import { PaginatorHelper } from '../helpers/Paginators';
 import { galleryItemSlice } from '../redux/GalleryItemSlice';
-import { IGalleryState, IGalleryStateMeta, IPreviewGiphyImg, IPreviewPixabyImg } from '../redux/GalleryItemState';
+import { IGalleryState, IGalleryStateMeta, IPreviewImg } from '../redux/GalleryItemState';
 import { apiImagesQueryGet } from './ApiImagesQueryGet';
 
 export interface IUseLoadPagesProps {
@@ -16,7 +16,7 @@ export interface IUseLoadPagesProps {
 }
 
 export interface IUseLoadPagesResult {
-    images: (IPreviewGiphyImg | IPreviewPixabyImg)[];
+    images: (IPreviewImg)[];
     pageIdx?: number;
     hasMorePages: boolean;
     isLoading: boolean;
@@ -152,7 +152,7 @@ function asyncLoadMore(
 
 function mapImages(providers: (ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[]) {
     return providers
-        .map<(IPreviewPixabyImg | IPreviewGiphyImg)[]>(provider =>
+        .map<(IPreviewImg)[]>(provider =>
             provider.imgProvider === 'pixabay'
                 ? provider.hits.map(img => ({ imgProvider: provider.imgProvider, ...img }))
                 : provider.imgProvider === 'giphy'
