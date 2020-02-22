@@ -5,12 +5,12 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 console.log(`>>>\n${isDevelopment ? 'DEVELOPMENT' : 'PRODUCTION'}\n>>>`);
 
 module.exports = {
-    entry: ['react-hot-loader/patch', './src/index.tsx'],
+    entry: ['react-hot-loader/patch', './src/main/index.tsx'],
     output: {
         filename: 'app.js',
         chunkFilename: '[name].bundle.js',
         publicPath: '/js/',
-        path: path.resolve(__dirname, 'dist/js'),
+        path: path.resolve(__dirname, 'dist/main/js'),
     },
     resolve: {
         alias: {
