@@ -1,10 +1,11 @@
 const path = require('path');
+require('react-hot-loader/patch');
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 console.log(`>>>\n${isDevelopment ? 'DEVELOPMENT' : 'PRODUCTION'}\n>>>`);
 
 module.exports = {
-    entry: './src/index.tsx',
+    entry: ['react-hot-loader/patch', './src/index.tsx'],
     output: {
         filename: 'app.js',
         chunkFilename: '[name].bundle.js',
@@ -14,6 +15,7 @@ module.exports = {
     resolve: {
         alias: {
             '@shared': path.resolve('../server/shared/lib'),
+            'react-dom': '@hot-loader/react-dom',
         },
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
         modules: ['src', 'node_modules'],
@@ -21,9 +23,12 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(tsx|ts|js|jsx)$/,
+                test: /\.(tsx?)$/,
                 exclude: /node_modules/,
                 use: [
+                    {
+                        loader: "react-hot-loader/webpack"
+                    },
                     {
                         loader: 'babel-loader',
                         options: {
@@ -40,12 +45,16 @@ module.exports = {
                                         "displayName": isDevelopment,
                                         "fileName": isDevelopment
                                     }
-                                ]
+                                ],
+                                "react-hot-loader/babel"
                             ]
                         }
                     },
                     {
-                        loader: 'ts-loader'
+                        loader: "ts-loader",
+                        options: {
+                            transpileOnly: true
+                        }
                     },
                 ]
             },

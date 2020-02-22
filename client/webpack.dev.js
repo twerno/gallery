@@ -19,6 +19,14 @@ module.exports = merge(common, {
         historyApiFallback: true,
         host: "0.0.0.0",
         inline: true,
+        hot: true,
+        stats: {
+            modules: false,
+            chunks: false,
+            children: false,
+            chunkModules: false,
+            hash: false,
+        },
     },
     devtool: 'source-map',
     plugins: [

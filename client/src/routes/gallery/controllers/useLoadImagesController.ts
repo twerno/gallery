@@ -2,13 +2,14 @@ import { IImageQueryParams, ILocalGiphyGetImageReturnModel, ILocalPixabayGetImag
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { IGalleryUrlQuery } from 'routes/Path';
-import { RootState } from 'store/Store';
+import { RootState } from 'store/RootReducer';
 import { useIsMounted } from 'utils/ComponentHelper';
 
 import { PaginatorHelper } from '../helpers/Paginators';
 import { galleryItemSlice } from '../redux/GalleryItemSlice';
 import { IGalleryState, IGalleryStateMeta, IPreviewImg } from '../redux/GalleryItemState';
 import { apiImagesQueryGet } from './ApiImagesQueryGet';
+import { store } from 'store/Store';
 
 export interface IUseLoadPagesProps {
     query: IGalleryUrlQuery;

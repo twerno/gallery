@@ -1,12 +1,17 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { galleryItemSlice } from 'routes/gallery/redux/GalleryItemSlice';
+import { configureStore } from '@reduxjs/toolkit';
+import rootReducers from './RootReducer';
 
-const rootReducer = combineReducers({
-    galleryItems: galleryItemSlice.reducer,
-})
+export function createStore() {
 
-export type RootState = ReturnType<typeof rootReducer>
+    const store = configureStore({
+        reducer: rootReducers
+    });
 
-export const store = configureStore({
-    reducer: rootReducer
-});
+    if (process.env.NODE_ENV !== 'production' && module.hot) {
+        module.hot.accept('./RootReducer', () => store.replaceReducer(rootReducers))
+    }
+
+    return store;
+}
+
+export const store = createStore();

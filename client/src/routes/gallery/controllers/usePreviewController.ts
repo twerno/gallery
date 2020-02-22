@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'store/Store';
 
 import { galleryItemSlice } from '../redux/GalleryItemSlice';
 import { IGalleryState } from '../redux/GalleryItemState';
+import { RootState } from 'store/RootReducer';
 
 
 export interface IUsePreviewControllerProps {

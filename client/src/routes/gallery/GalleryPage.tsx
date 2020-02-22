@@ -9,6 +9,7 @@ import { GalleryContainer } from './components/GalleryContainer';
 import { GalleryHeader } from './components/GalleryHeader';
 import { useLoadImagesController } from './controllers/useLoadImagesController';
 import { usePreviewController } from './controllers/usePreviewController';
+import { hot } from 'react-hot-loader/root';
 
 export interface IGalleryPage {
     routeProps: RouteComponentProps<{ query?: string }>;
@@ -58,7 +59,7 @@ const GalleryPage = (props: IGalleryPage) => {
     );
 };
 
-export default GalleryPage;
+export default hot(GalleryPage);
 
 
 const Errors: React.FC<{ errors?: string[] }> = ({ errors }) => (
