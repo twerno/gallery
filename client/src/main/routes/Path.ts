@@ -12,3 +12,8 @@ export const Path = {
     galleryUrl(query: IGalleryUrlQuery) { return RouteUtils.makeUrl(this.galleryRoute, null, query) },
 
 };
+
+
+export const emptyGalleryUrlQuery: IGalleryUrlQuery = {
+    q: undefined,
+};

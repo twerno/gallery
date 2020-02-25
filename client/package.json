@@ -9,8 +9,7 @@
     "build-prod": "npm run build-shared && webpack --config webpack.prod.js",
     "build-dev": "npm run build-shared && webpack --config webpack.dev.js",
     "build-shared": "cd ../server/shared && npm run tsc",
-    "test": "jest",
-    "lint:css": "stylelint './src/**/*.tsx'"
+    "test": "jest"
   },
   "author": "Tomasz Werno",
   "license": "ISC",

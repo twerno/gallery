@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HomePage [HomePage] Component basic tests matches the snapshot 1`] = `
+<styled.div>
+  <h1>
+    React Gallery
+  </h1>
+  <Component
+    initialValues={
+      Object {
+        "q": undefined,
+      }
+    }
+    onSubmit={[Function]}
+  />
+</styled.div>
+`;
+
+exports[`HomePage [HomePage] Component basic tests matches the snapshot 2`] = `
+<styled.div>
+  <h1>
+    React Gallery
+  </h1>
+  <Component
+    initialValues={
+      Object {
+        "q": "cats",
+      }
+    }
+    onSubmit={[Function]}
+  />
+</styled.div>
+`;
