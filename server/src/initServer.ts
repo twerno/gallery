@@ -1,11 +1,12 @@
-import express, { Router } from 'express';
 import compression from 'compression';
+import express, { Router } from 'express';
 import path from 'path';
-
+import { defaultErrorHandler } from './helpers/errorHandler';
+import logger from './helpers/logger';
 import { loadProperties } from './helpers/Properties';
 import ImagesApi from './router/images/ImagesApi';
 import { ImagesService } from './router/images/ImagesService';
-import { defaultErrorHandler, logErrors } from './router/errorHandler';
+
 
 const port = process.env.PORT && +process.env.PORT || 3333;
 
@@ -24,6 +25,7 @@ export async function initServer(): Promise<{ app: express.Express, port: number
 
     // api router
     const apiRouter = Router();
+    apiRouter.use(logger.requestLogger);
     app.use(apiRouter);
 
     // services
@@ -37,7 +39,7 @@ export async function initServer(): Promise<{ app: express.Express, port: number
         res.sendFile(path.join(path.resolve('./static'), 'index.html'));
     });
 
-    app.use(logErrors);
+    app.use(logger.errorLogger);
     app.use(defaultErrorHandler);
 
     return { app, port };

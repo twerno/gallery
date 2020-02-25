@@ -6,8 +6,3 @@ export const defaultErrorHandler: ErrorRequestHandler = (err, req, res, next) =>
     }
     res.sendStatus(500);
 };
-
-export const logErrors: ErrorRequestHandler = (err, req, res, next) => {
-    console.error(err.stack);
-    next(err);
-};

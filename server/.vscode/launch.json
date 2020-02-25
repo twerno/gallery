@@ -14,7 +14,9 @@
             "program": "${workspaceFolder}\\src\\app.ts",
             "outFiles": [
                 "${workspaceFolder}\\dist\\src\\app.js"
-            ]
+            ],
+            // potrzebne dla logów z Winston
+            "outputCapture": "std",
         }
     ]
 }

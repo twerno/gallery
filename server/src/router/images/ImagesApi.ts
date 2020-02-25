@@ -1,6 +1,6 @@
 import { IImageQueryParams, IImageQueryRespBody } from '@shared/lib';
 import { Router } from 'express';
-import { AsyncHandler, asyncRequestHandler } from '../ApiUtils';
+import { AsyncHandler, asyncRequestHandler } from '../../helpers/ApiUtils';
 import { ImagesService } from './ImagesService';
 
 export default class ImagesApi {
@@ -23,7 +23,6 @@ export default class ImagesApi {
 
             const query = req.params;
             // TODO validate query
-
             const result = await this.imageService.query(query);
             res.json(result);
         }
