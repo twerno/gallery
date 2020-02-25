@@ -6,7 +6,7 @@ export type IImageQueryParams = {
     pixabay_offset?: string;
     giphy_offset?: string;
     perPageLimit: string;
-    services: 'giphy' | 'pixabay' | 'both';
+    services?: 'giphy' | 'pixabay';
     [key: string]: any; // hack to satisfy express.Params
 }
 

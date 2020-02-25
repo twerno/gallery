@@ -18,20 +18,16 @@ export class ImagesService {
     }
 
     public async query(params: IImageQueryParams): Promise<IImageQueryRespBody> {
-        const promises: Promise<ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel | undefined>[] = [];
 
-        if (params.services !== 'pixabay') {
-            promises.push(this.giphyService.loadImageData(params));
-        }
+        const promises: Promise<ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel | undefined>[] = [
+            this.giphyService.loadImageData(params),
+            this.pixabayService.loadImageData(params)
+        ];
 
-        if (params.services !== 'giphy') {
-            promises.push(this.pixabayService.loadImageData(params));
-        }
+        const providers = (await Promise.all(promises))
+            .filter(notEmpty);
 
-        return {
-            providers: (await Promise.all(promises))
-                .filter(notEmpty)
-        };
+        return { providers };
     }
 
 }

@@ -13,7 +13,9 @@ export class GiphyService {
 
     public async loadImageData(queryParams: IImageQueryParams): Promise<ILocalGiphyGetImageReturnModel | undefined> {
 
-        if (queryParams.giphy_offset === undefined) { return; }
+        if (queryParams.giphy_offset === undefined || (queryParams.services && queryParams.services !== 'giphy')) {
+            return;
+        }
 
         const params = {
             api_key: this.properties.GIPHY_API,

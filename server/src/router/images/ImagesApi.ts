@@ -18,10 +18,10 @@ export default class ImagesApi {
         return this;
     }
 
-    private queryHandler: AsyncHandler<IImageQueryParams, IImageQueryRespBody, never>
+    private queryHandler: AsyncHandler<never, IImageQueryRespBody, never>
         = async (req, res) => {
 
-            const query = req.params;
+            const query = req.query as IImageQueryParams;
             // TODO validate query
             const result = await this.imageService.query(query);
             res.json(result);

@@ -109,7 +109,7 @@ function getApiImagesQueryParams(props: IUseLoadPagesProps, loadingMeta: IGaller
         pixabay_offset: pageOffset(loadingMeta.limit?.pixabayPages) + '',
         giphy_offset: pageOffset(loadingMeta.limit?.giphyPages) + '',
         perPageLimit: props.perPageLimit + '',
-        services: 'both'
+        services: undefined
     };
 }
 

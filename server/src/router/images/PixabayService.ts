@@ -13,7 +13,9 @@ export class PixabayService {
 
     public async loadImageData(queryParams: IImageQueryParams): Promise<ILocalPixabayGetImageReturnModel | undefined> {
 
-        if (queryParams.pixabay_offset === undefined) { return; }
+        if (queryParams.pixabay_offset === undefined || (queryParams.services && queryParams.services !== 'pixabay')) {
+            return;
+        }
 
         const params = {
             key: this.properties.PIXABAY_API,
