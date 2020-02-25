@@ -3,8 +3,9 @@ import compression from 'compression';
 import path from 'path';
 
 import { loadProperties } from './helpers/Properties';
-import { ImagesApi } from './router/images/ImagesApi';
+import ImagesApi from './router/images/ImagesApi';
 import { ImagesService } from './router/images/ImagesService';
+import { defaultErrorHandler, logErrors } from './router/errorHandler';
 
 const port = process.env.PORT && +process.env.PORT || 3333;
 
@@ -15,27 +16,29 @@ export async function initServer(): Promise<{ app: express.Express, port: number
     // load properties
     const properties = loadProperties();
 
-    // router
-    const router = Router();
-    app.use(router);
+    // resources
     const resources: Router = Router();
     resources.use('/js', express.static('static/js'));
     resources.use('/', express.static('static'));
     app.use(resources);
 
-    const registerApi = (_path: string, api: { router: Router }) => {
-        router.use(_path, api.router);
-    };
+    // api router
+    const apiRouter = Router();
+    app.use(apiRouter);
 
     // services
     const imagesService = new ImagesService(properties);
 
     // API
-    registerApi('/api/images', new ImagesApi(imagesService));
+    new ImagesApi('/api/images', imagesService)
+        .register(apiRouter);
 
     app.get('*', (req, res) => {
         res.sendFile(path.join(path.resolve('./static'), 'index.html'));
     });
+
+    app.use(logErrors);
+    app.use(defaultErrorHandler);
 
     return { app, port };
 }

@@ -1,25 +1,30 @@
+import { IImageQueryParams, IImageQueryRespBody } from '@shared/lib';
 import { Router } from 'express';
-
-import { IImageQueryParams, IImageQueryRespBody, IStringMap } from '@shared/lib';
+import { AsyncHandler, asyncRequestHandler } from '../ApiUtils';
 import { ImagesService } from './ImagesService';
-import { requestHandlerWraper, AsyncHandler } from '../ApiUtils';
 
-export class ImagesApi {
-
-    public router = Router();
+export default class ImagesApi {
 
     public constructor(
-        public imageService: ImagesService
-    ) {
-        this.router.get('/query', requestHandlerWraper(this.queryHandler));
+        public readonly apiPath: string,
+        public readonly imageService: ImagesService,
+    ) { }
+
+    public register(router: Router): this {
+        const path = this.apiPath;
+
+        router.get(`${path}/query`, asyncRequestHandler(this.queryHandler));
+
+        return this;
     }
 
-    private queryHandler: AsyncHandler<IImageQueryParams & IStringMap<string>, IImageQueryRespBody, never>
+    private queryHandler: AsyncHandler<IImageQueryParams, IImageQueryRespBody, never>
         = async (req, res) => {
-            console.log('received request /query');
-            const result = await this.imageService.query(req.query);
+
+            const query = req.params;
+            // TODO validate query
+
+            const result = await this.imageService.query(query);
             res.json(result);
         }
-
 }
-

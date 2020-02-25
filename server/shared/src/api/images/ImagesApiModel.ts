@@ -1,12 +1,13 @@
 import { IGiphyGetImageReturnModel } from './GiphyApiModel';
 import { IPixabayGetImageReturnModel } from './PixabayApiModel';
 
-export interface IImageQueryParams {
-    q: string | undefined;
-    pixabay_offset: string | undefined;
-    giphy_offset: string | undefined;
+export type IImageQueryParams = {
+    q?: string;
+    pixabay_offset?: string;
+    giphy_offset?: string;
     perPageLimit: string;
     services: 'giphy' | 'pixabay' | 'both';
+    [key: string]: any; // hack to satisfy express.Params
 }
 
 export interface IImageQueryRespBody {
