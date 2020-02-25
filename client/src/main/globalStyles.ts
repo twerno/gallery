@@ -21,10 +21,10 @@ export const breakpoints = {
 
 export const GlobalStyle = createGlobalStyle`
 
-    & {
-        font-size: 16px;
+    body {
+        font-size: 16 px;
     }
-
+    
     h1 {
         font-size: 4rem;
         margin-bottom: 1rem;

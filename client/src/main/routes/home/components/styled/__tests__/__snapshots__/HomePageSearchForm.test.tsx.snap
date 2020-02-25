@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HomePageSearchForm [HomePageSearchForm] Component basic tests matches the snapshot 1`] = `
+<styled.form
+  onSubmit={[Function]}
+>
+  <styled.input
+    aria-label="Search"
+    id="q"
+    name="q"
+    onChange={[Function]}
+    type="text"
+    value=""
+  />
+  <styled.button
+    disabled={false}
+    mode="standalone"
+    type="submit"
+  >
+    Search
+  </styled.button>
+</styled.form>
+`;

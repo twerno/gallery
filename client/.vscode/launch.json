@@ -12,6 +12,17 @@
                     "path": "${workspaceFolder}/src"
                 }
             ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Jest Current File",
+            "program": "${workspaceRoot}/node_modules/jest/bin/jest",
+            "args": [
+                "${fileBasename}"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
         }
     ]
 }

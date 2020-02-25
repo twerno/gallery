@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StyledCloseButton [StyledCloseButton] Component basic tests matches the snapshot 1`] = `
+.c0 {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  margin: 1.5rem;
+  background: rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.75);
+  position: relative;
+  -webkit-transform: scale(1.5);
+  -ms-transform: scale(1.5);
+  transform: scale(1.5);
+}
+
+.c0::before,
+.c0::after {
+  content: '';
+  background-color: white;
+  width: 0.25rem;
+  height: 1.5rem;
+  position: absolute;
+  left: .7rem;
+  top: 0px;
+  box-shadow: 0px 0px 28px -3px rgba(0,0,0,0.75);
+}
+
+.c0::before {
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.c0::after {
+  -webkit-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+
+<button
+  className="c0"
+/>
+`;

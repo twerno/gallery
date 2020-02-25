@@ -1,7 +1,7 @@
 import AnimatedLoader from 'main/components/AnimatedLoader';
 import FullScreenContainer from 'main/components/FullScreenContainer';
 import { SpringHorizontalTransition } from 'main/components/HorizontalTransition';
-import CloseButton from 'main/components/styled/CloseButton';
+import CloseButton from 'main/components/styled/StyledCloseButton';
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { useSwipeable } from 'react-swipeable';

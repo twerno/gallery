@@ -1,11 +1,11 @@
-import Button from 'main/components/styled/Button';
-import Input from 'main/components/styled/Input';
+import Input from 'main/components/styled/StyledInput';
 import { Field, Formik } from 'formik';
 import * as React from 'react';
 import Headroom from 'react-headroom';
 import { IGalleryUrlQuery } from 'main/routes/Path';
 
 import HeaderSearchForm from './styled/HeaderSearchForm';
+import StyledButton from 'main/components/styled/StyledButton';
 
 export interface IGalleryHeaderProps {
     query: IGalleryUrlQuery;
@@ -29,9 +29,9 @@ export const GalleryHeader = (props: IGalleryHeaderProps) => {
                     ({ isSubmitting }) => (
                         <HeaderSearchForm>
                             <Field name="q" as={Input} aria-label="Search" />
-                            <Button type="submit" disabled={isSubmitting} disableLeftBorder={true}>
+                            <StyledButton type="submit" disabled={isSubmitting} mode='inputButton'>
                                 Search
-                            </Button>
+                            </StyledButton>
                         </HeaderSearchForm>
                     )
                 }

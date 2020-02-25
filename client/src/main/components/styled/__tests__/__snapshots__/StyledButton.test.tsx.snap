@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StyledButton [StyledButton distinct] Component basic tests matches the snapshot 1`] = `
+.c0 {
+  padding: 9px 18px;
+  background-color: transparent;
+  color: black;
+  border: 1px solid #cecece;
+  border-radius: 5px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  -webkit-letter-spacing: 0.75px;
+  -moz-letter-spacing: 0.75px;
+  -ms-letter-spacing: 0.75px;
+  letter-spacing: 0.75px;
+}
+
+.c0:focus {
+  outline-color: rgb(103,156,226);
+}
+
+<button
+  className="c0"
+  mode="standalone"
+/>
+`;
+
+exports[`StyledButton [StyledButton inputButton] Component basic tests matches the snapshot 1`] = `
+.c0 {
+  padding: 9px 18px;
+  background-color: transparent;
+  color: black;
+  border: 1px solid #cecece;
+  border-radius: 0;
+  border-left: none;
+  font-size: 1rem;
+  text-transform: uppercase;
+  -webkit-letter-spacing: 0.75px;
+  -moz-letter-spacing: 0.75px;
+  -ms-letter-spacing: 0.75px;
+  letter-spacing: 0.75px;
+}
+
+.c0:focus {
+  outline-color: rgb(103,156,226);
+}
+
+<button
+  className="c0"
+  mode="inputButton"
+/>
+`;

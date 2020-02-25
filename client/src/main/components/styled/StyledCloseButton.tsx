@@ -29,6 +29,4 @@ export default styled.button`
         transform: rotate(-45deg);
     }
 
-    
-
 `;

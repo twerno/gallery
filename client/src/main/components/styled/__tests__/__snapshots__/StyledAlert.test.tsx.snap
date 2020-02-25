@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StyledAlert [StyledAlert] Component basic tests matches the snapshot 1`] = `
+.c0 {
+  padding: 9px 18px;
+  width: 100%;
+  font-size: 1.5rem;
+  color: red;
+}
+
+<div
+  className="c0"
+/>
+`;

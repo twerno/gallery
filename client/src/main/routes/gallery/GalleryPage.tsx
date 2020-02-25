@@ -1,5 +1,5 @@
 import FullScreenContainer from 'main/components/FullScreenContainer';
-import Alert from 'main/components/styled/Alert';
+import Alert from 'main/components/styled/StyledAlert';
 import * as React from 'react';
 import { RouteComponentProps, useHistory } from 'react-router';
 import { IGalleryUrlQuery, Path } from 'main/routes/Path';
