@@ -1,15 +1,15 @@
 import FullScreenContainer from 'main/components/FullScreenContainer';
 import Alert from 'main/components/styled/StyledAlert';
+import { Path } from 'main/routes/Path';
 import * as React from 'react';
-import { RouteComponentProps, useHistory } from 'react-router';
-import { IGalleryUrlQuery, Path } from 'main/routes/Path';
-
+import { hot } from 'react-hot-loader/root';
+import { RouteComponentProps } from 'react-router';
 import { FullScreenPreview } from './components/FullScreenPreview';
 import { GalleryContainer } from './components/GalleryContainer';
 import { GalleryHeader } from './components/GalleryHeader';
 import { useLoadImagesController } from './controllers/useLoadImagesController';
 import { usePreviewController } from './controllers/usePreviewController';
-import { hot } from 'react-hot-loader/root';
+import { GalleryQueryHelper, IGalleryUrlQuery } from './model/galleryQuery';
 
 export interface IGalleryPage {
     routeProps: RouteComponentProps<{ query?: string }>;
@@ -18,11 +18,9 @@ export interface IGalleryPage {
 const perPageLimit = 10;
 
 const GalleryPage = (props: IGalleryPage) => {
-    const searchParams = new URLSearchParams(props.routeProps.location.search);
-    const query: IGalleryUrlQuery = { q: searchParams.get('q') || undefined };
-    const history = useHistory();
+    const query = GalleryQueryHelper.buildFromLocationSearch(props.routeProps.location.search);
 
-    const { images, isLoading, hasMorePages, errors, triggerRefreshManually } = useLoadImagesController(
+    const { images, errors, isLoading, hasMorePages, triggerRefreshManually } = useLoadImagesController(
         { perPageLimit, query }
     );
     const { previewIdx, previewNextHandler, previewPrevHandler } = usePreviewController({ perPageLimit });
@@ -33,7 +31,7 @@ const GalleryPage = (props: IGalleryPage) => {
         if (submittedQuery.q === query.q && hasErrors) {
             triggerRefreshManually();
         }
-        history.push(Path.galleryUrl(submittedQuery));
+        props.routeProps.history.push(Path.galleryUrl(submittedQuery));
     }
 
     return (

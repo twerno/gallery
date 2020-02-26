@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import httpCodes from 'http-status-codes';
 
-import { IImageQueryParams, IPixabayGetImageReturnModel, ILocalPixabayGetImageReturnModel } from '@shared/';
+import { IPixabayGetImageReturnModel, ILocalPixabayGetImageReturnModel, IImagesApiSearchQuery } from '@shared/';
 import { IProperties } from 'helpers/Properties';
 
 
@@ -11,7 +11,7 @@ export class PixabayService {
         protected properties: IProperties
     ) { }
 
-    public async loadImageData(queryParams: IImageQueryParams): Promise<ILocalPixabayGetImageReturnModel | undefined> {
+    public async loadImageData(queryParams: IImagesApiSearchQuery): Promise<ILocalPixabayGetImageReturnModel | undefined> {
 
         if (queryParams.pixabay_offset === undefined || (queryParams.services && queryParams.services !== 'pixabay')) {
             return;

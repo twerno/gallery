@@ -1,9 +1,9 @@
-import { IImageQueryParams, IImageQueryRespBody } from '@shared/';
+import { IImagesApiSearchQuery, IImagesApiSearchRespBody } from '@shared/';
 import Axios, { AxiosResponse } from 'axios';
 import RouteUtils from 'main/utils/RouteUtils';
 
-export async function apiImagesQueryGet(params: IImageQueryParams): Promise<AxiosResponse<IImageQueryRespBody>> {
-    const url = `/api/images/query${RouteUtils.makeQueryFromMap(params)}`;
+export async function imagesApiSearchGet(params: IImagesApiSearchQuery): Promise<AxiosResponse<IImagesApiSearchRespBody>> {
+    const url = `/api/images/search${RouteUtils.makeQueryFromMap(params)}`;
 
-    return Axios.get<IImageQueryRespBody>(url);
+    return Axios.get<IImagesApiSearchRespBody>(url);
 }

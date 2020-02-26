@@ -1,20 +1,6 @@
-import * as React from 'react';
+import React from "react";
 
-export const useStyles = (...styles: any[]): string => {
-    return (styles || [])
-        .filter(s => typeof s === 'string')
-        .join(' ');
-};
-
-export const useRefresh = () => {
-    const [, setCounter] = React.useState<number>(0);
-
-    const refresh = () => {
-        setCounter(Math.random());
-    };
-
-    return refresh;
-};
+const shallow = require("shallow-equal") as { shallowEqualObjects: (objA?: {}, objB?: {}) => boolean };
 
 export const useIsMounted = () => {
     const _isMounted = React.useRef<boolean>(true);
@@ -25,4 +11,24 @@ export const useIsMounted = () => {
     }, []);
 
     return { isMounted: () => _isMounted.current };
-}
+};
+
+/**
+ * helper hook for async actions to determined if action is being resolved in valid context
+ * isObsolete returns true if component has been unmounted or param has been updated
+ */
+export const useIsObsolete = <T>(initParam?: T) => {
+    const { isMounted } = useIsMounted();
+    const paramRef = React.useRef<T | undefined>(initParam);
+
+    const isObsolete = (shallowParam: T): boolean => {
+        return !isMounted() || !shallow.shallowEqualObjects(paramRef.current, shallowParam);
+    }
+
+    const updateParam = (newShallowParam: T) => paramRef.current = newShallowParam;
+
+    return {
+        isObsolete,
+        updateParam
+    };
+};

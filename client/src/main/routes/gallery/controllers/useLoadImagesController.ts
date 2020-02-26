@@ -1,15 +1,13 @@
-import { IImageQueryParams, ILocalGiphyGetImageReturnModel, ILocalPixabayGetImageReturnModel } from '@shared/';
+import { IImagesApiSearchQuery } from '@shared/';
+import { RootState } from 'main/store/RootReducer';
+import { useIsObsolete } from 'main/utils/ComponentHelper';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { IGalleryUrlQuery } from 'main/routes/Path';
-import { RootState } from 'main/store/RootReducer';
-import { useIsMounted } from 'main/utils/ComponentHelper';
-
-import { PaginatorHelper } from '../helpers/Paginators';
+import { IGalleryUrlQuery } from '../model/galleryQuery';
 import { galleryItemSlice } from '../redux/GalleryItemSlice';
-import { IGalleryState, IGalleryStateMeta, IPreviewImg } from '../redux/GalleryItemState';
-import { apiImagesQueryGet } from './ApiImagesQueryGet';
-import { store } from 'main/store/Store';
+import { IGalleryState, IPreviewImg } from '../redux/GalleryItemState';
+import { imagesApiSearchGet } from './ApiImagesQueryGet';
+import LoadImagesControllerHelper from './LoadImagesControllerHelper';
 
 export interface IUseLoadPagesProps {
     query: IGalleryUrlQuery;
@@ -25,119 +23,97 @@ export interface IUseLoadPagesResult {
     triggerRefreshManually: () => void;
 }
 
-interface ILoadImagesControllerMutableState {
-    query?: IGalleryUrlQuery;
-    loadingsNo: number;
-}
-
 export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPagesResult => {
-    const { isMounted } = useIsMounted();
+    /**
+     * counter of pending promises used to determined if there is an active loading
+     * counter is reset on every query change (promise become obsolete)
+     */
+    const [pendingPromisesCounter, setPendingPromisesCounter] = React.useState<number>(0);
 
+    /**
+     * Redux state
+     */
     const { loadingMeta, errors, images } = useSelector<RootState, IGalleryState>(rootState => rootState.galleryItems);
     const dispatch = useDispatch();
 
-    const isValid = () => isMounted() && loadingMeta?.query?.q === mutableState.current.query?.q;
+    /**
+     * helper for async actions to determined if action is being resolved in valid context
+     * is context change (param is updated or component unmounted) isObsolete returns true
+     */
+    const { isObsolete, updateParam } = useIsObsolete(props.query);
 
-    const mutableState = React.useRef<ILoadImagesControllerMutableState>({
-        query: { q: undefined }, loadingsNo: 0
-    });
-
-    // reset state when query changes
+    /**
+     * effects to be executed on query change
+     * reseting state and updating param, 
+     * handling of all current pending promises will be terminated
+     */
     React.useEffect(() => {
+        updateParam(props.query);
+        setPendingPromisesCounter(0);
         dispatch(galleryItemSlice.actions.newQuery(props.query));
-        mutableState.current.query = props.query;
-        mutableState.current.loadingsNo = 0;
     }, [props.query.q]);
 
-    // load data from the server on state change
+    /**
+     * effect that is in control of loading data
+     * triggers on changes in loadingMeta object from redux state
+     */
     React.useEffect(() => {
-        if (loadingMeta.query?.q === undefined) { return };
-        asyncLoadMore(props, loadingMeta, mutableState, isValid, dispatch);
+        // if (loadingMeta.query?.q === undefined) { return };
+        asyncLoadImageData();
     }, [loadingMeta.query?.q, loadingMeta.pageIdx]);
+
+    const asyncLoadImageData = () => {
+        const queryParams = LoadImagesControllerHelper.getApiImagesQueryParams(props, loadingMeta);
+
+        setPendingPromisesCounter(state => state + 1);
+        asyncLoadImageDataAndMapResponse(queryParams, props)
+            .then(payload => {
+                if (isObsolete(props.query)) { return; }
+
+                setPendingPromisesCounter(state => state - 1);
+                dispatch(galleryItemSlice.actions.itemsLoaded(payload));
+            })
+            .catch(errors => {
+                if (isObsolete(props.query)) { return; }
+
+                setPendingPromisesCounter(0);
+                dispatch(galleryItemSlice.actions.loadingErrors(errors));
+            });
+    }
 
     const hasMorePages = loadingMeta?.limit === undefined ||
         Math.max(loadingMeta.limit.giphyPages, loadingMeta.limit.pixabayPages) > (loadingMeta?.pageIdx || 0);
 
-    const isLoading: boolean = mutableState.current.loadingsNo > 0;
-
     // 
     const triggerRefreshManually = () => {
-        if (!isValid() || loadingMeta.query?.q === undefined) { return };
-        asyncLoadMore(props, loadingMeta, mutableState, isValid, dispatch);
+        if (isObsolete(props.query)) { return };
+        asyncLoadImageData();
     }
 
     return {
         images,
-        hasMorePages,
-        pageIdx: loadingMeta?.pageIdx,
-        isLoading,
         errors,
+
+        pageIdx: loadingMeta?.pageIdx,
+        isLoading: pendingPromisesCounter > 0,
+        hasMorePages,
+
         triggerRefreshManually,
     };
 };
 
-function computeLimit(providers: (ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[], imagesPerPage: number) {
-    const limit = {
-        pixabayPages: 0,
-        giphyPages: 0,
-    };
-
-    providers.map(provider => {
-        if (provider.imgProvider === 'pixabay') {
-            limit.pixabayPages = PaginatorHelper.computeTotalPixabayPages(provider, imagesPerPage);
-        }
-        else if (provider.imgProvider === 'giphy') {
-            limit.giphyPages = PaginatorHelper.computeTotalGiphyPages(provider, imagesPerPage);
-        }
-    });
-
-    return limit;
-}
-
-function getApiImagesQueryParams(props: IUseLoadPagesProps, loadingMeta: IGalleryStateMeta): IImageQueryParams {
-    const pageIdx: number = loadingMeta.pageIdx;
-
-    const pageOffset = (maxPagesNo: number | undefined) => maxPagesNo == undefined
-        ? 0
-        : maxPagesNo > pageIdx
-            ? pageIdx
-            : undefined;
-
-
-    return {
-        q: loadingMeta?.query?.q,
-        pixabay_offset: pageOffset(loadingMeta.limit?.pixabayPages) + '',
-        giphy_offset: pageOffset(loadingMeta.limit?.giphyPages) + '',
-        perPageLimit: props.perPageLimit + '',
-        services: undefined
-    };
-}
-
-function asyncLoadMore(
+async function asyncLoadImageDataAndMapResponse(
+    queryParams: IImagesApiSearchQuery,
     props: IUseLoadPagesProps,
-    loadingMeta: IGalleryStateMeta,
-    mutableState: React.MutableRefObject<ILoadImagesControllerMutableState>,
-    isValid: () => boolean,
-    dispatch: React.Dispatch<any>,
 ) {
-    const queryParams = getApiImagesQueryParams(props, loadingMeta);
-
-    mutableState.current.loadingsNo++;
-    apiImagesQueryGet(queryParams)
+    return imagesApiSearchGet(queryParams)
         .then(val => {
-            // promise is not longer valid -- return
-            if (!isValid()) { return; }
+            const images = LoadImagesControllerHelper.mapImages(val.data.providers);
+            const limit = LoadImagesControllerHelper.computeLimit(val.data.providers, props.perPageLimit);
 
-            const images = mapImages(val.data.providers);
-            const limit = computeLimit(val.data.providers, props.perPageLimit);
-
-            mutableState.current.loadingsNo--;
-            dispatch(galleryItemSlice.actions.itemsLoaded({ images, limit }));
+            return { images, limit };
         })
         .catch(err => {
-            // promise is not longer valid -- return
-            if (!isValid()) { return; }
-
             let errors: string[];
             if (typeof err.message === 'string') {
                 errors = [err.message];
@@ -146,19 +122,6 @@ function asyncLoadMore(
                 errors = [err.toString()];
             }
 
-            mutableState.current.loadingsNo = 0;
-            dispatch(galleryItemSlice.actions.loadingErrors(errors));
+            throw errors;
         });
-}
-
-function mapImages(providers: (ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[]) {
-    return providers
-        .map<(IPreviewImg)[]>(provider =>
-            provider.imgProvider === 'pixabay'
-                ? provider.hits.map(img => ({ imgProvider: provider.imgProvider, ...img }))
-                : provider.imgProvider === 'giphy'
-                    ? provider.data.map(img => ({ imgProvider: provider.imgProvider, ...img }))
-                    : []
-        )
-        .reduce((prev, curr) => [...prev, ...curr], []);
 }

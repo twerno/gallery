@@ -1,5 +1,5 @@
 import { IGiphyImage, IPixabayImage } from '@shared/';
-import { IGalleryUrlQuery } from 'main/routes/Path';
+import { IGalleryUrlQuery } from '../model/galleryQuery';
 
 export interface IPreviewGiphyImg extends IGiphyImage {
     imgProvider: 'giphy';

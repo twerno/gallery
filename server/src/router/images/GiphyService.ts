@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import httpCodes from 'http-status-codes';
 
-import { IImageQueryParams, ILocalGiphyGetImageReturnModel, IGiphyGetImageReturnModel } from '@shared/';
+import { ILocalGiphyGetImageReturnModel, IGiphyGetImageReturnModel, IImagesApiSearchQuery } from '@shared/';
 import { IProperties } from 'helpers/Properties';
 
 
@@ -11,7 +11,7 @@ export class GiphyService {
         protected properties: IProperties
     ) { }
 
-    public async loadImageData(queryParams: IImageQueryParams): Promise<ILocalGiphyGetImageReturnModel | undefined> {
+    public async loadImageData(queryParams: IImagesApiSearchQuery): Promise<ILocalGiphyGetImageReturnModel | undefined> {
 
         if (queryParams.giphy_offset === undefined || (queryParams.services && queryParams.services !== 'giphy')) {
             return;

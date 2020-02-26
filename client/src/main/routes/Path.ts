@@ -1,8 +1,5 @@
 import RouteUtils from 'main/utils/RouteUtils';
-
-export interface IGalleryUrlQuery {
-    q: string | undefined;
-}
+import { IGalleryUrlQuery } from './gallery/model/galleryQuery';
 
 export const Path = {
     homeRoute: '/',
@@ -11,9 +8,4 @@ export const Path = {
     galleryRoute: '/gallery/search',
     galleryUrl(query: IGalleryUrlQuery) { return RouteUtils.makeUrl(this.galleryRoute, null, query) },
 
-};
-
-
-export const emptyGalleryUrlQuery: IGalleryUrlQuery = {
-    q: undefined,
 };

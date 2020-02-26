@@ -1,7 +1,7 @@
 import { IGiphyGetImageReturnModel } from './GiphyApiModel';
 import { IPixabayGetImageReturnModel } from './PixabayApiModel';
 
-export type IImageQueryParams = {
+export type IImagesApiSearchQuery = {
     q?: string;
     pixabay_offset?: string;
     giphy_offset?: string;
@@ -10,7 +10,7 @@ export type IImageQueryParams = {
     [key: string]: any; // hack to satisfy express.Params
 }
 
-export interface IImageQueryRespBody {
+export interface IImagesApiSearchRespBody {
     providers: (ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[];
 }
 

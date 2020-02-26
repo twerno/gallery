@@ -1,9 +1,13 @@
 
 
+import {
+    typeUtils,
+    IImagesApiSearchQuery, IImagesApiSearchRespBody,
+    ILocalGiphyGetImageReturnModel, ILocalPixabayGetImageReturnModel
+} from '@shared/';
+import { IProperties } from 'helpers/Properties';
 import { GiphyService } from './GiphyService';
 import { PixabayService } from './PixabayService';
-import { IProperties } from 'helpers/Properties';
-import { IImageQueryParams, ILocalGiphyGetImageReturnModel, ILocalPixabayGetImageReturnModel, IImageQueryRespBody } from '@shared/';
 
 export class ImagesService {
 
@@ -17,7 +21,7 @@ export class ImagesService {
         this.pixabayService = new PixabayService(properties);
     }
 
-    public async query(params: IImageQueryParams): Promise<IImageQueryRespBody> {
+    public async search(params: IImagesApiSearchQuery): Promise<IImagesApiSearchRespBody> {
 
         const promises: Promise<ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel | undefined>[] = [
             this.giphyService.loadImageData(params),
@@ -25,13 +29,10 @@ export class ImagesService {
         ];
 
         const providers = (await Promise.all(promises))
-            .filter(notEmpty);
+            .filter(typeUtils.notEmpty);
 
         return { providers };
     }
 
 }
 
-function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-    return value !== null && value !== undefined;
-}
