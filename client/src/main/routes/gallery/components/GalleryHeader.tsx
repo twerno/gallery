@@ -2,10 +2,10 @@ import Input from 'main/components/styled/StyledInput';
 import { Field, Formik } from 'formik';
 import * as React from 'react';
 import Headroom from 'react-headroom';
-import { IGalleryUrlQuery } from 'main/routes/Path';
 
 import HeaderSearchForm from './styled/HeaderSearchForm';
 import StyledButton from 'main/components/styled/StyledButton';
+import { IGalleryUrlQuery } from '../model/galleryQuery';
 
 export interface IGalleryHeaderProps {
     query: IGalleryUrlQuery;

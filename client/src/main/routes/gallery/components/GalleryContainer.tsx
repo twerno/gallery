@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { IGalleryUrlQuery } from 'main/routes/Path';
 import styled from 'styled-components';
 
 import { IPreviewGiphyImg, IPreviewPixabyImg } from '../redux/GalleryItemState';
 import { LazyGalleryItemGiphyImage } from './LazyGalleryItemGiphyImage';
 import { LazyGalleryItemLoadMoreTrigger } from './LazyGalleryItemLoadMoreTrigger';
 import { LazyGalleryItemPixabyImage } from './LazyGalleryItemPixabyImage';
+import { IGalleryUrlQuery } from '../model/galleryQuery';
 
 export interface IGalleryProps {
     disable: boolean;

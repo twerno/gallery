@@ -1,7 +1,7 @@
 import { wait } from '@testing-library/react';
 import { mount } from 'enzyme';
 import StyledInput from 'main/components/styled/StyledInput';
-import { IGalleryUrlQuery } from 'main/routes/Path';
+import { IGalleryUrlQuery } from 'main/routes/gallery/model/galleryQuery';
 import * as React from 'react';
 import { componentBasicTests } from "test/componentBasicTests";
 import HomePageSearchForm from '../HomePageSearchForm';

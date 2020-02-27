@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import React from 'react';
 import StyledInput from 'main/components/styled/StyledInput';
 import StyledButton from 'main/components/styled/StyledButton';
-import { IGalleryUrlQuery } from 'main/routes/Path';
+import { IGalleryUrlQuery } from 'main/routes/gallery/model/galleryQuery';
 
 const StyledForm = styled.form`
         width: 50%;
