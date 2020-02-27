@@ -2,8 +2,8 @@ import { IPixabayImage } from '@shared/';
 import * as React from 'react';
 
 import { FullScreenPreviewLoadingPlaceholder } from './FullScreenPreview';
-import { IResponsiveImgProps, LazyResponsiveGalleryImage } from './helper/LazyResponsiveGalleryImage';
-import { FullScreenGalleryItem } from './styled/GalleryItem';
+import { IResponsivePictureProps, LazyResponsiveGalleryPicture } from './gallery/LazyResponsiveGalleryPicture';
+import { FullScreenGalleryItem } from './gallery/GalleryStyles';
 
 interface IFullScreenPreviewPixabyImageProps {
     image: IPixabayImage;
@@ -21,10 +21,10 @@ export const FullScreenPreviewPixabyImage = (props: IFullScreenPreviewPixabyImag
         .map(s => s.trim())
         .reduce((prev, tag) => `${prev} ${tag}`, '');
 
-    const imageProps: IResponsiveImgProps = {
+    const imageProps: IResponsivePictureProps = {
         alt,
         defaultImgSrc: img_small,
-        srcSet: [
+        responsiveSrcList: [
             { src: img_960, media: '(min-width: 920px)' },
             { src: img_640, media: '(min-width: 600px)' },
             { src: img_340, media: '(min-width: 300px)' },
@@ -32,11 +32,12 @@ export const FullScreenPreviewPixabyImage = (props: IFullScreenPreviewPixabyImag
         ]
     };
 
-    return (
-        <LazyResponsiveGalleryImage
-            loadingPlaceholder={<FullScreenPreviewLoadingPlaceholder />}
-            wrapper={(wrapperProps => <FullScreenGalleryItem {...wrapperProps} />)}
-            imageProps={imageProps}
-        />
-    );
+    return null;
+    // return (
+    //     <LazyResponsiveGalleryImage
+    //         // loadingPlaceholder={<FullScreenPreviewLoadingPlaceholder />}
+    //         // wrapper={(wrapperProps => <FullScreenGalleryItem {...wrapperProps} />)}
+    //         responsiveImg={imageProps}
+    //     />
+    // );
 };

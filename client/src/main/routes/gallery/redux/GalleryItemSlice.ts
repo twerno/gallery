@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IStringMap } from '@shared/';
-import { IGalleryUrlQuery } from 'main/routes/Path';
 
 import { IGalleryState, IItemsLoadedActionPayload } from './GalleryItemState';
+import { IGalleryUrlQuery } from '../model/galleryQuery';
 
 const initialState: IGalleryState = {
     images: [],
@@ -57,7 +57,7 @@ export const galleryItemSlice = createSlice({
             };
         },
 
-        setPreview(state, action: PayloadAction<number | undefined>): IGalleryState {
+        showFullImg(state, action: PayloadAction<number | undefined>): IGalleryState {
             return {
                 ...state,
                 previewIdx: action.payload

@@ -6,12 +6,12 @@ import { PaginatorHelper } from "../helpers/Paginators";
 
 export default {
 
-    mapImages,
-    computeLimit,
-    getApiImagesQueryParams,
+    mapReturnModel2PreviewImg,
+    computeProvidersLimits,
+    buildImagesAPIGetQuery,
 }
 
-function mapImages(providers: (ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[]) {
+function mapReturnModel2PreviewImg(providers: (ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[]) {
     return providers
         .map<(IPreviewImg)[]>(provider =>
             provider.imgProvider === 'pixabay'
@@ -23,7 +23,7 @@ function mapImages(providers: (ILocalGiphyGetImageReturnModel | ILocalPixabayGet
         .reduce((prev, curr) => [...prev, ...curr], []);
 }
 
-function getApiImagesQueryParams(props: IUseLoadPagesProps, loadingMeta: IGalleryStateMeta): IImagesApiSearchQuery {
+function buildImagesAPIGetQuery(props: IUseLoadPagesProps, loadingMeta: IGalleryStateMeta): IImagesApiSearchQuery {
     const pageIdx: number = loadingMeta.pageIdx;
 
     const pageOffset = (maxPagesNo: number | undefined) => maxPagesNo == undefined
@@ -41,7 +41,7 @@ function getApiImagesQueryParams(props: IUseLoadPagesProps, loadingMeta: IGaller
     };
 }
 
-function computeLimit(providers: (ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[], imagesPerPage: number) {
+function computeProvidersLimits(providers: (ILocalGiphyGetImageReturnModel | ILocalPixabayGetImageReturnModel)[], imagesPerPage: number) {
     const limit = {
         pixabayPages: 0,
         giphyPages: 0,

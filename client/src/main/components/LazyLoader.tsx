@@ -3,18 +3,15 @@ import { useInView } from 'react-intersection-observer';
 
 export interface ILazyLoaderProps {
     loadingPlaceholder: React.ReactElement;
-    wrapper: React.FC<{
-        isLoaded: boolean,
-        ref: (node?: Element | null | undefined) => void,
-    }>;
     children: (props: {
         isLoaded: boolean,
         setLoaded: React.Dispatch<React.SetStateAction<boolean>>
     }) => React.ReactNode;
     rootMargin?: string;
+    containerRef: React.RefObject<HTMLDivElement>;
 }
 
-export const LazyLoader = (props: ILazyLoaderProps) => {
+export const LazyLoaderTrigger = (props: ILazyLoaderProps) => {
 
     const [isLoaded, setLoaded] = React.useState(false);
 
@@ -23,16 +20,14 @@ export const LazyLoader = (props: ILazyLoaderProps) => {
         rootMargin: props.rootMargin || '200px 0px',
     });
 
-    return props.wrapper(
-        {
-            ref,
-            isLoaded,
-            children: (
-                <>
-                    {!isLoaded && props.loadingPlaceholder}
-                    {inView && props.children({ setLoaded, isLoaded })}
-                </>
-            )
-        }
-    );
+    React.useEffect(() => {
+        ref(props.containerRef.current);
+    }, [props.containerRef.current])
+
+    return (
+        <>
+            {!isLoaded && props.loadingPlaceholder}
+            {inView && props.children({ setLoaded, isLoaded })}
+        </>
+    )
 };

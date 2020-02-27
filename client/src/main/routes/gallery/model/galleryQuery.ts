@@ -5,7 +5,7 @@ export interface IGalleryUrlQuery {
 export const GalleryQueryHelper = {
 
     buildEmpty,
-    buildFromLocationSearch
+    buildFrom: buildFromLocationSearch
 
 }
 

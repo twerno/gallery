@@ -1,10 +1,10 @@
 import { wait } from '@testing-library/react';
 import { mount } from 'enzyme';
 import StyledInput from 'main/components/styled/StyledInput';
-import { IGalleryUrlQuery } from 'main/routes/Path';
 import * as React from 'react';
 import { componentBasicTests } from "test/componentBasicTests";
 import HomePageSearchForm from '../HomePageSearchForm';
+import { IGalleryUrlQuery } from 'main/routes/gallery/model/galleryQuery';
 
 describe("HomePageSearchForm", () => {
 

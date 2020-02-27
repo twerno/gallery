@@ -44,7 +44,7 @@ const _FullScreenPreview: React.FC<IFullScreenPreview> = ({ previewImg, classNam
     return (
         <div className={className} {...handlers}>
             <ButtonRow>
-                <CloseButton onClick={() => dispatch(galleryItemSlice.actions.setPreview(undefined))} />
+                <CloseButton onClick={() => dispatch(galleryItemSlice.actions.showFullImg(undefined))} />
             </ButtonRow>
 
             <SpringHorizontalTransition item={previewImg} transitionDirection={direction}>

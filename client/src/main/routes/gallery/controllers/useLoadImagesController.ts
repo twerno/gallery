@@ -15,7 +15,7 @@ export interface IUseLoadPagesProps {
 }
 
 export interface IUseLoadPagesResult {
-    images: (IPreviewImg)[];
+    images: IPreviewImg[];
     pageIdx?: number;
     hasMorePages: boolean;
     isLoading: boolean;
@@ -63,7 +63,7 @@ export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPage
     }, [loadingMeta.query?.q, loadingMeta.pageIdx]);
 
     const asyncLoadImageData = () => {
-        const queryParams = LoadImagesControllerHelper.getApiImagesQueryParams(props, loadingMeta);
+        const queryParams = LoadImagesControllerHelper.buildImagesAPIGetQuery(props, loadingMeta);
 
         setPendingPromisesCounter(state => state + 1);
         asyncLoadImageDataAndMapResponse(queryParams, props)
@@ -108,8 +108,8 @@ async function asyncLoadImageDataAndMapResponse(
 ) {
     return imagesApiSearchGet(queryParams)
         .then(val => {
-            const images = LoadImagesControllerHelper.mapImages(val.data.providers);
-            const limit = LoadImagesControllerHelper.computeLimit(val.data.providers, props.perPageLimit);
+            const images = LoadImagesControllerHelper.mapReturnModel2PreviewImg(val.data.providers);
+            const limit = LoadImagesControllerHelper.computeProvidersLimits(val.data.providers, props.perPageLimit);
 
             return { images, limit };
         })
