@@ -23,7 +23,7 @@ export const GalleryResponsivePicture = (props: IGalleryResponsivePictureProps) 
     return (
         <GalleryStyles.GalleryItemPicture
             onLoad={onLoadHandler}
-            isHidden={!isVisible}
+            visible={isVisible}
         >
             {srcSet}
             <GalleryStyles.GalleryItemImg src={pictureData.defaultImgSrc} alt={pictureData.alt} />

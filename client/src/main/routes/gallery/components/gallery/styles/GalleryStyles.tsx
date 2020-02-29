@@ -61,7 +61,7 @@ const GalleryItem = styled.div<IGalleryStyledItemProps>`
 * 
 */
 interface IGalleryStyledPictureProps {
-  readonly isHidden: boolean;
+  readonly visible: boolean;
 }
 
 /**
@@ -74,7 +74,7 @@ const GalleryItemPicture = styled.picture<IGalleryStyledPictureProps>`
   min-width: 100%;
 
   ${
-  props => props.isHidden && css`
+  props => !props.visible && css`
           position: absolute;
           opacity: 0;
   `}
