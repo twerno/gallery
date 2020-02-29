@@ -4,13 +4,11 @@ import { Path } from 'main/routes/Path';
 import * as React from 'react';
 import { hot } from 'react-hot-loader/root';
 import { RouteComponentProps } from 'react-router';
-import { FullScreenPreview } from './components/FullScreenPreview';
-import { GalleryHeader } from './components/GalleryHeader';
+import { Gallery } from './components/gallery/Gallery';
+import { GalleryHeader } from './components/header/GalleryHeader';
 import { useLoadImagesController } from './controllers/useLoadImagesController';
 import { usePreviewController } from './controllers/usePreviewController';
 import { GalleryQueryHelper, IGalleryUrlQuery } from './model/galleryQuery';
-import { GalleryContainer } from './components/gallery/GalleryStyles';
-import { Gallery } from './components/gallery/Gallery';
 
 export interface IGalleryPage {
     routeProps: RouteComponentProps<{ query?: string }>;
@@ -47,13 +45,13 @@ const GalleryPage = (props: IGalleryPage) => {
                     disabled={previewIdx !== undefined}
                 />
             }
-            {previewIdx !== undefined &&
+            {/* {previewIdx !== undefined &&
                 <FullScreenPreview
                     previewImg={images[previewIdx]}
                     previewNextHandler={previewNextHandler}
                     previewPrevHandler={previewPrevHandler}
                 />
-            }
+            } */}
         </>
     );
 };

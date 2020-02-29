@@ -1,10 +1,5 @@
-import AnimatedLoader from 'main/components/AnimatedLoader';
-import { LazyLoaderTrigger } from 'main/components/LazyLoader';
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
-
-import { galleryItemSlice } from '../redux/GalleryItemSlice';
-import { GalleryItemPlaceholderWraper } from './gallery/GalleryStyles';
 
 export interface ILazyGalleryItemLoadMoreTriggerProps {
 

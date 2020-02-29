@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { IPreviewGiphyImg, IPreviewPixabyImg } from '../../redux/GalleryItemState';
-import { GalleryItemGiphy } from './GalleryItemGiphy';
-import { GalleryItemPixaby } from './GalleryItemPixaby';
-import { GalleryContainer } from './GalleryStyles';
+import GalleryItemGiphyHelper from './helper/GalleryItemGiphyHelper';
+import GalleryItemPixabayHelper from './helper/GalleryItemPixabayHelper';
+import { GalleryItem } from './GalleryItem';
+import GalleryStyles from './styles/GalleryStyles';
 
 export interface IGalleryProps {
     disabled: boolean;
@@ -13,24 +14,18 @@ export const Gallery = (props: IGalleryProps) => {
 
     const items = props.images?.map(
         (img, idx) =>
-            img.imgProvider === 'giphy'
-                ? <GalleryItemGiphy
-                    image={img}
-                    imageIdx={idx}
-                    key={`giphy_${img.id}`}
-                    disabled={props.disabled}
-                />
-                : <GalleryItemPixaby
-                    image={img}
-                    imageIdx={idx}
-                    key={`pixabay_${img.id}`}
-                    disabled={props.disabled}
-                />
-    );
+            ({
+                imageIdx: idx,
+                disabled: props.disabled,
+                key: `${img.imgProvider}_${img.id}`,
+                responsivePicture: img.imgProvider === 'giphy'
+                    ? GalleryItemGiphyHelper.convertToResponsivePictureProps(img)
+                    : GalleryItemPixabayHelper.convertToResponsivePictureProps(img)
+            }));
 
     return (
-        <GalleryContainer>
-            {items}
-        </GalleryContainer>
+        <GalleryStyles.GalleryContainer>
+            {items.map(v => <GalleryItem {...v} />)}
+        </GalleryStyles.GalleryContainer>
     );
 };

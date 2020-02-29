@@ -3,9 +3,9 @@ import { Field, Formik } from 'formik';
 import * as React from 'react';
 import Headroom from 'react-headroom';
 
-import HeaderSearchForm from './styled/HeaderSearchForm';
+import HeaderSearchForm from '../styled/HeaderSearchForm';
 import StyledButton from 'main/components/styled/StyledButton';
-import { IGalleryUrlQuery } from '../model/galleryQuery';
+import { IGalleryUrlQuery } from '../../model/galleryQuery';
 
 export interface IGalleryHeaderProps {
     query: IGalleryUrlQuery;

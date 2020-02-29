@@ -1,0 +1,396 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HomePage [LazyResponsiveGalleryPicture - not visible test - children should not be visible] Component basic tests matches the snapshot 1`] = `
+.c1 {
+  background-color: rgba(0,0,0,0.05);
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.c1::before {
+  border: .25rem solid rgba(0,0,0,0.3);
+  -webkit-animation: 4s infinite spin linear;
+  animation: 4s infinite spin linear;
+}
+
+.c1::before,
+.c1::after {
+  content: '';
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  border-right-color: transparent;
+  border-left-color: transparent;
+  border-radius: 50%;
+}
+
+.c0 {
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  min-width: 500px;
+  width: 100%;
+  height: 100%;
+}
+
+@media only screen and (max-width:600px) {
+  .c0 {
+    min-width: 200px;
+  }
+}
+
+<div
+  className="c0"
+>
+  <div
+    className="c1"
+  />
+</div>
+`;
+
+exports[`HomePage [LazyResponsiveGalleryPicture] Component basic tests matches the snapshot 1`] = `
+.c1 {
+  background-color: rgba(0,0,0,0.05);
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.c1::before {
+  border: .25rem solid rgba(0,0,0,0.3);
+  -webkit-animation: 4s infinite spin linear;
+  animation: 4s infinite spin linear;
+}
+
+.c1::before,
+.c1::after {
+  content: '';
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  border-right-color: transparent;
+  border-left-color: transparent;
+  border-radius: 50%;
+}
+
+.c0 {
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  min-width: 500px;
+  width: 100%;
+  height: 100%;
+}
+
+@media only screen and (max-width:600px) {
+  .c0 {
+    min-width: 200px;
+  }
+}
+
+<div
+  className="c0"
+>
+  <div
+    className="c1"
+  />
+</div>
+`;
+
+exports[`HomePage LazyResponsiveGalleryPicture - element is visible - children should be render 1`] = `
+.c1 {
+  background-color: rgba(0,0,0,0.05);
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.c1::before {
+  border: .25rem solid rgba(0,0,0,0.3);
+  -webkit-animation: 4s infinite spin linear;
+  animation: 4s infinite spin linear;
+}
+
+.c1::before,
+.c1::after {
+  content: '';
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  border-right-color: transparent;
+  border-left-color: transparent;
+  border-radius: 50%;
+}
+
+.c0 {
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  min-width: 500px;
+  width: 100%;
+  height: 100%;
+}
+
+@media only screen and (max-width:600px) {
+  .c0 {
+    min-width: 200px;
+  }
+}
+
+<div>
+  <Component
+    containerRef={
+      Object {
+        "current": .c1 {
+  background-color: rgba(0,0,0,0.05);
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.c1::before {
+  border: .25rem solid rgba(0,0,0,0.3);
+  -webkit-animation: 4s infinite spin linear;
+  animation: 4s infinite spin linear;
+}
+
+.c1::before,
+.c1::after {
+  content: '';
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  border-right-color: transparent;
+  border-left-color: transparent;
+  border-radius: 50%;
+}
+
+.c0 {
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  min-width: 500px;
+  width: 100%;
+  height: 100%;
+}
+
+.c2 {
+  opacity: 1;
+  position: relative;
+  -webkit-transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out;
+  min-width: 100%;
+  position: absolute;
+  opacity: 0;
+}
+
+.c3 {
+  object-fit: cover;
+  min-width: 100%;
+  height: 100%;
+}
+
+@media only screen and (max-width:600px) {
+  .c0 {
+    min-width: 200px;
+  }
+}
+
+<div>
+          <div
+            class="c0"
+          >
+            <div
+              class="c1"
+            />
+          </div>
+          <picture
+            class="c2"
+          >
+            <source
+              media="(min-width: 600px)"
+              srcset="img-big.jpg"
+            />
+            <img
+              alt="alt"
+              class="c3"
+              src="img.jpg"
+            />
+          </picture>
+        </div>,
+      }
+    }
+    pictureData={
+      Object {
+        "alt": "alt",
+        "defaultImgSrc": "img.jpg",
+        "responsiveSrcList": Array [
+          Object {
+            "media": "(min-width: 600px)",
+            "src": "img-big.jpg",
+          },
+        ],
+      }
+    }
+  >
+    <Component
+      containerRef={
+        Object {
+          "current": <div>
+            <div
+              class="c0"
+            >
+              <div
+                class="c1"
+              />
+            </div>
+            <picture
+              class=""
+            >
+              <source
+                media="(min-width: 600px)"
+                srcset="img-big.jpg"
+              />
+              <img
+                alt="alt"
+                class=""
+                src="img.jpg"
+              />
+            </picture>
+          </div>,
+        }
+      }
+      loadingPlaceholder={
+        <styled.div>
+          <styled.div />
+        </styled.div>
+      }
+    >
+      <styled.div>
+        <div
+          className="c0"
+        >
+          <styled.div>
+            <div
+              className="c1"
+            />
+          </styled.div>
+        </div>
+      </styled.div>
+    </Component>
+  </Component>
+</div>
+`;
+
+exports[`HomePage observerCallback test 1`] = `
+<div>
+  <Component
+    containerRef={
+      Object {
+        "current": null,
+      }
+    }
+    pictureData={
+      Object {
+        "alt": "alt",
+        "defaultImgSrc": "img.jpg",
+        "responsiveSrcList": Array [
+          Object {
+            "media": "(min-width: 600px)",
+            "src": "img-big.jpg",
+          },
+        ],
+      }
+    }
+  />
+</div>
+`;

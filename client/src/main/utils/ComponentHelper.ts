@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const shallow = require("shallow-equal") as { shallowEqualObjects: (objA?: {}, objB?: {}) => boolean };
 

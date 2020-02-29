@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GalleryItemGiphyHelper convertToResponsivePictureProps 1`] = `
+Object {
+  "alt": "title",
+  "defaultImgSrc": "http://example.com.not/image-150.jpg",
+  "responsiveSrcList": Array [
+    Object {
+      "media": "(min-width: 600px)",
+      "src": "http://example.com.not/image-300.jpg",
+    },
+  ],
+}
+`;

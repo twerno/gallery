@@ -1,7 +1,7 @@
 import { breakpoints } from 'main/globalStyles';
 import styled, { css } from 'styled-components';
 
-export const GalleryContainer = styled.div`
+const GalleryContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -18,7 +18,7 @@ export const GalleryContainer = styled.div`
     }
 `;
 
-export const GalleryItemPlaceholderWraper = styled.div`
+const ItemLoadingPlaceholder = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
@@ -36,11 +36,11 @@ export const GalleryItemPlaceholderWraper = styled.div`
 `;
 
 
-export interface IGalleryItemProps {
+export interface IGalleryStyledItemProps {
   disabled?: boolean;
 }
 
-export const GalleryItem = styled.div<IGalleryItemProps>`
+const GalleryItem = styled.div<IGalleryStyledItemProps>`
   margin: 1px;
   flex-grow: 1;
   overflow: hidden;
@@ -60,14 +60,14 @@ export const GalleryItem = styled.div<IGalleryItemProps>`
 /**
 * 
 */
-interface IGalleryPicture {
+interface IGalleryStyledPictureProps {
   readonly isHidden: boolean;
 }
 
 /**
 * 
 */
-export const GalleryPicture = styled.picture<IGalleryPicture>`
+const GalleryItemPicture = styled.picture<IGalleryStyledPictureProps>`
   opacity: 1;
   position: relative;
   transition: opacity 0.2s ease-in-out;
@@ -80,8 +80,17 @@ export const GalleryPicture = styled.picture<IGalleryPicture>`
   `}
 `;
 
-export const GalleryImg = styled.img`
+const GalleryItemImg = styled.img`
   object-fit: cover;
   min-width: 100%;
   height: 100%;
 `;
+
+
+export default {
+  GalleryContainer,
+  ItemLoadingPlaceholder,
+  GalleryItem,
+  GalleryItemPicture,
+  GalleryItemImg,
+}

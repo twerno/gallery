@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GalleryItemPixabayHelper convertToResponsivePictureProps 1`] = `
+Object {
+  "alt": "tag1 tag2",
+  "defaultImgSrc": "http://example.com.not/preview.jpg",
+  "responsiveSrcList": Array [
+    Object {
+      "media": "(min-width: 600px)",
+      "src": "http://example.com.not/webformatURL.jpg",
+    },
+  ],
+}
+`;
