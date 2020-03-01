@@ -1,5 +1,5 @@
 import AnimatedLoader from 'main/components/AnimatedLoader';
-import { LazyLoaderTrigger } from 'main/components/LazyLoader';
+import { LazyLoader } from 'main/components/LazyLoader/LazyLoader';
 import * as React from 'react';
 import { GalleryResponsivePicture, IResponsivePictureProps } from './GalleryResponsivePicture';
 import GalleryStyles from './styles/GalleryStyles';
@@ -11,8 +11,8 @@ export interface ILazyResponsivePictureProps {
 
 export const LazyResponsiveGalleryPicture = (props: ILazyResponsivePictureProps) => {
     return (
-        <LazyLoaderTrigger
-            loadingPlaceholder={loadingPlaceHolder}
+        <LazyLoader
+            loadingPlaceholder={lazyResponsiveGalleryLoadingPlaceholder}
             containerRef={props.containerRef}
         >
             {
@@ -23,8 +23,9 @@ export const LazyResponsiveGalleryPicture = (props: ILazyResponsivePictureProps)
                         pictureData={props.pictureData}
                     />
             }
-        </LazyLoaderTrigger>
+        </LazyLoader>
     );
 };
 
-const loadingPlaceHolder = <GalleryStyles.ItemLoadingPlaceholder children={<AnimatedLoader />} />;
+export const lazyResponsiveGalleryLoadingPlaceholder =
+    <GalleryStyles.ItemLoadingPlaceholder children={<AnimatedLoader />} />;
