@@ -1,13 +1,14 @@
-import { IImagesApiSearchQuery } from '@shared/';
+import { Path } from 'main/routes/Path';
 import { RootState } from 'main/store/RootReducer';
 import { useIsObsolete } from 'main/utils/ComponentHelper';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { IGalleryUrlQuery } from '../model/galleryQuery';
 import { galleryItemSlice } from '../redux/GalleryItemSlice';
 import { IGalleryState, IPreviewImg } from '../redux/GalleryItemState';
-import { imagesApiSearchGet } from './ApiImagesQueryGet';
 import LoadImagesControllerHelper from './LoadImagesControllerHelper';
+import ImagesRpcService from '../rpcService/ImagesRpcService';
 
 export interface IUseLoadPagesProps {
     query: IGalleryUrlQuery;
@@ -20,13 +21,14 @@ export interface IUseLoadPagesResult {
     hasMorePages: boolean;
     isLoading: boolean;
     errors: string[] | undefined;
-    triggerRefreshManually: () => void;
+    loadMoreHandler: () => void;
+    searchUpdateHandler: (newSearch: IGalleryUrlQuery) => void;
 }
 
 export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPagesResult => {
     /**
      * counter of pending promises used to determined if there is an active loading
-     * counter is reset on every query change (promise become obsolete)
+     * counter is being reseted on every query change (promise become obsolete)
      */
     const [pendingPromisesCounter, setPendingPromisesCounter] = React.useState<number>(0);
 
@@ -38,14 +40,12 @@ export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPage
 
     /**
      * helper for async actions to determined if action is being resolved in valid context
-     * is context change (param is updated or component unmounted) isObsolete returns true
+     * when context changes (param was updated or component was unmounted), isObsolete will return true
      */
     const { isObsolete, updateParam } = useIsObsolete(props.query);
 
     /**
-     * effects to be executed on query change
-     * reseting state and updating param, 
-     * handling of all current pending promises will be terminated
+     * on query change, update local state and dispatch new query to redux store
      */
     React.useEffect(() => {
         updateParam(props.query);
@@ -54,19 +54,20 @@ export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPage
     }, [props.query.q]);
 
     /**
-     * effect that is in control of loading data
-     * triggers on changes in loadingMeta object from redux state
+     * handle on change of redux store loading meta obj by triggering new rpc request
      */
     React.useEffect(() => {
-        // if (loadingMeta.query?.q === undefined) { return };
         asyncLoadImageData();
     }, [loadingMeta.query?.q, loadingMeta.pageIdx]);
 
+    /**
+     * rpc request 
+     */
     const asyncLoadImageData = () => {
         const queryParams = LoadImagesControllerHelper.buildImagesAPIGetQuery(props, loadingMeta);
 
         setPendingPromisesCounter(state => state + 1);
-        asyncLoadImageDataAndMapResponse(queryParams, props)
+        ImagesRpcService.search(queryParams, props)
             .then(payload => {
                 if (isObsolete(props.query)) { return; }
 
@@ -81,13 +82,23 @@ export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPage
             });
     }
 
-    const hasMorePages = loadingMeta?.limit === undefined ||
-        Math.max(loadingMeta.limit.giphyPages, loadingMeta.limit.pixabayPages) > (loadingMeta?.pageIdx || 0);
 
-    // 
-    const triggerRefreshManually = () => {
-        if (isObsolete(props.query)) { return };
-        asyncLoadImageData();
+    const hasMorePages =
+        loadingMeta?.limit === undefined // not loaded yet
+        || Math.max(loadingMeta.limit.giphyPages, loadingMeta.limit.pixabayPages) > (loadingMeta?.pageIdx || 0);
+
+    const loadMoreHandler = () => {
+        dispatch(galleryItemSlice.actions.loadNextPage());
+    };
+
+    const history = useHistory();
+    const searchUpdateHandler = (search: IGalleryUrlQuery) => {
+        if (isObsolete(search)) { return; }
+        if (errors && errors.length > 0) {
+            asyncLoadImageData();
+        }
+
+        history.push(Path.galleryUrl(search));
     }
 
     return {
@@ -98,30 +109,7 @@ export const useLoadImagesController = (props: IUseLoadPagesProps): IUseLoadPage
         isLoading: pendingPromisesCounter > 0,
         hasMorePages,
 
-        triggerRefreshManually,
+        loadMoreHandler,
+        searchUpdateHandler,
     };
 };
-
-async function asyncLoadImageDataAndMapResponse(
-    queryParams: IImagesApiSearchQuery,
-    props: IUseLoadPagesProps,
-) {
-    return imagesApiSearchGet(queryParams)
-        .then(val => {
-            const images = LoadImagesControllerHelper.mapReturnModel2PreviewImg(val.data.providers);
-            const limit = LoadImagesControllerHelper.computeProvidersLimits(val.data.providers, props.perPageLimit);
-
-            return { images, limit };
-        })
-        .catch(err => {
-            let errors: string[];
-            if (typeof err.message === 'string') {
-                errors = [err.message];
-            }
-            else {
-                errors = [err.toString()];
-            }
-
-            throw errors;
-        });
-}

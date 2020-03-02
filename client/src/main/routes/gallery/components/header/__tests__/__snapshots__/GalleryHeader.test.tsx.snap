@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GalleryHeader [GalleryHeader] Component basic tests matches the snapshot 1`] = `
+<Headroom
+  calcHeightOnResize={true}
+  disable={false}
+  disableInlineStyles={false}
+  downTolerance={0}
+  onPin={[Function]}
+  onUnfix={[Function]}
+  onUnpin={[Function]}
+  parent={[Function]}
+  pinStart={0}
+  style={
+    Object {
+      "backgroundColor": "white",
+      "zIndex": 10,
+    }
+  }
+  upTolerance={5}
+  wrapperStyle={Object {}}
+>
+  <Component
+    initialValues={
+      Object {
+        "q": "cats",
+      }
+    }
+    onSubmit={[Function]}
+  />
+</Headroom>
+`;

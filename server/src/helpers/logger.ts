@@ -18,7 +18,7 @@ const requestLogger = expressWinston.logger({
 });
 
 const errorLogger: ErrorRequestHandler = (err, req, res, next) => {
-    console.error(err.stack);
+    console.error(err?.config?.url, err.stack);
     next(err);
 };
 

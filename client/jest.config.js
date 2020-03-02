@@ -38,6 +38,7 @@ module.exports = {
     "moduleNameMapper": {
         "^main/([./a-zA-Z0-9$_-]+)$": "<rootDir>/src/main/$1",
         "@shared/$": "<rootDir>/../server/shared/lib",
+        "@mock/([./a-zA-Z0-9$_-]+)$": "<rootDir>/src/__mocks__/$1"
     },
 
     "snapshotSerializers": [

@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GalleryHeaderSearchForm [GalleryHeaderSearchForm] Component basic tests matches the snapshot 1`] = `
+<styled.form
+  onSubmit={[Function]}
+>
+  <styled.input
+    aria-label="Search"
+    id="q"
+    name="q"
+    onChange={[Function]}
+    type="text"
+    value="cats"
+  />
+  <styled.button
+    disabled={false}
+    mode="inputButton"
+    type="submit"
+  >
+    Search
+  </styled.button>
+</styled.form>
+`;
+
+exports[`GalleryHeaderSearchForm [GalleryHeaderSearchForm] Component basic tests matches the snapshot 2`] = `
+<styled.form
+  onSubmit={[Function]}
+>
+  <styled.input
+    aria-label="Search"
+    id="q"
+    name="q"
+    onChange={[Function]}
+    type="text"
+    value=""
+  />
+  <styled.button
+    disabled={false}
+    mode="inputButton"
+    type="submit"
+  >
+    Search
+  </styled.button>
+</styled.form>
+`;

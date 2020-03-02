@@ -2,6 +2,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { mount } from 'enzyme';
 import * as React from 'react';
 import { LazyLoader } from '../LazyLoader';
+import { useInViewMockMeta } from '@mock/react-intersection-observer';
 
 describe('LazyLoader', () => {
 
@@ -33,30 +34,31 @@ describe('LazyLoader', () => {
         const containerRef = React.createRef<HTMLDivElement>();
         mountLazyLoader({ inView: true, isLoadedVal: true, containerRef });
 
-        expect(useInViewRef).toBeTruthy();
-        expect(useInViewRef).toBeCalledTimes(1);
-        expect(useInViewRef).toBeCalledWith(containerRef.current);
+        expect(useInViewMockMeta.returnAsRef).toBeTruthy();
+        expect(useInViewMockMeta.returnAsRef).toBeCalledTimes(1);
+        expect(useInViewMockMeta.returnAsRef).toBeCalledWith(containerRef.current);
     });
 
     test('LazyLoader - defaults', async () => {
         mountLazyLoader({ inView: false });
 
-        expect(usedWithParams).toBeTruthy();
-        expect(usedWithParams.triggerOnce).toBe(true);
-        expect(usedWithParams.rootMargin).toBe('0px 0px');
+        expect(useInViewMockMeta.params).toBeTruthy();
+        expect(useInViewMockMeta.params.triggerOnce).toBe(true);
+        expect(useInViewMockMeta.params.rootMargin).toBe('0px 0px');
     });
 
     test('LazyLoader - rootMargin', async () => {
         mountLazyLoader({ inView: false, rootMargin: '100px 100px' });
 
-        expect(usedWithParams).toBeTruthy();
-        expect(usedWithParams.rootMargin).toBe('100px 100px');
+        expect(useInViewMockMeta.params).toBeTruthy();
+        expect(useInViewMockMeta.params.rootMargin).toBe('100px 100px');
     });
 
     function mountLazyLoader({ inView, isLoadedVal, containerRef, rootMargin }: IMountLazyLoaderProps) {
-        globalInView = inView;
+        useInViewMockMeta.returnAsInView = inView;
         const placeholder = <div className="placeholder-test" />
         containerRef = containerRef || React.createRef<HTMLDivElement>();
+
         const wrapper = mount(
             <div ref={containerRef}>
                 <LazyLoader
@@ -83,20 +85,3 @@ interface IMountLazyLoaderProps {
     containerRef?: React.RefObject<HTMLDivElement>;
     rootMargin?: string;
 }
-
-
-//
-//  MOCK
-//
-//
-let globalInView: boolean = true;
-let useInViewRef: jest.Mock | null = null;
-let usedWithParams: any | null = null;
-
-jest.mock('react-intersection-observer', () => ({
-    useInView: (params: any) => {
-        usedWithParams = params;
-        useInViewRef = jest.fn();
-        return [useInViewRef, globalInView];
-    }
-}));

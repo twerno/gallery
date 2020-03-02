@@ -21,14 +21,19 @@ export const useIsObsolete = <T>(initParam?: T) => {
     const { isMounted } = useIsMounted();
     const paramRef = React.useRef<T | undefined>(initParam);
 
+    const eqParamShallow = (shallowParam: T): boolean => {
+        return !shallow.shallowEqualObjects(paramRef.current, shallowParam);
+    }
+
     const isObsolete = (shallowParam: T): boolean => {
-        return !isMounted() || !shallow.shallowEqualObjects(paramRef.current, shallowParam);
+        return !isMounted() || !eqParamShallow(shallowParam);
     }
 
     const updateParam = (newShallowParam: T) => paramRef.current = newShallowParam;
 
     return {
         isObsolete,
-        updateParam
+        updateParam,
+        eqParamShallow
     };
 };

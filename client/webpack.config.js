@@ -15,6 +15,7 @@ module.exports = {
     resolve: {
         alias: {
             '@shared': path.resolve('../server/shared/lib'),
+            '@mock': path.resolve('./src/main/__mocks__'),
             'react-dom': '@hot-loader/react-dom',
         },
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
